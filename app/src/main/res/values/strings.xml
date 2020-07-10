@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Void Launcher</string>
+    <string name="accessibility_service_label">Void Launcher</string>
+    <string name="accessibility_service_description">In order to turn the screen off and show notification panel, this needs to be enabled</string>
+</resources>

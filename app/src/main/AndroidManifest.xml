@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.coletz.voidlauncher">
+
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+
+    <application
+            android:allowBackup="true"
+            android:hardwareAccelerated="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"
+            tools:ignore="GoogleAppIndexingWarning"
+            android:resizeableActivity="true">
+
+        <activity
+                android:name=".activities.MainActivity"
+                android:theme="@style/FullscreenTheme"
+                android:clearTaskOnLaunch="true"
+                android:excludeFromRecents="true"
+                android:label="@string/app_name"
+                android:launchMode="singleTask"
+                android:screenOrientation="user"
+                android:stateNotNeeded="true"
+                android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="com.coletz.ADD_NOTIFICATION" />
+                <action android:name="com.coletz.DEL_NOTIFICATION" />
+            </intent-filter>
+        </activity>
+
+        <service
+                android:name=".utils.Accessible"
+                android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+                android:label="@string/accessibility_service_label"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                    android:name="android.accessibilityservice"
+                    android:resource="@xml/accessibility_service_config" />
+        </service>
+
+        <service android:name=".utils.NotificationListener"
+                android:label="@string/app_name"
+                android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
