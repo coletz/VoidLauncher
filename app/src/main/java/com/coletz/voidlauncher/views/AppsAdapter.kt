@@ -73,10 +73,11 @@ class AppsAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapter<
         private val appName = view
 
         init {
-            view.setOnClickListener(this)
+            appName.setOnClickListener(this)
             appName.setTextSize(TypedValue.COMPLEX_UNIT_PX, appName.context.resources.getDimension(
                 R.dimen.app_name_size
             ))
+            appName.setLines(1)
         }
 
         fun bind(app: AppObject){

@@ -55,7 +55,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
         settings_btn.setOnClickListener { startActivity(Intent(Settings.ACTION_SETTINGS)) }
 
         appViewModel = ViewModelProvider(this).get(AppViewModel::class.java)
-        appViewModel.apps.observe(this, appsObserver)
+        appViewModel.apps.observe(viewLifecycleOwner, appsObserver)
     }
 
     override fun onPause() {
