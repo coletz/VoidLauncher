@@ -66,25 +66,31 @@ class Accessible : AccessibilityService() {
         fun screenshot(context: Context?) = run(context, GLOBAL_ACTION_TAKE_SCREENSHOT)
 
         fun requestAccessibilityEnabled(context: Context, customFlags: Int? = null): Boolean {
+            android.util.Log.e("acc_step", "1")
             val expectedComponentName = ComponentName(context, Accessible::class.java)
-
+            android.util.Log.e("acc_step", "2")
             val enabledServicesSetting = Secure.getString(context.contentResolver, ENABLED_ACCESSIBILITY_SERVICES)
                 ?: return false
-
+            android.util.Log.e("acc_step", "3")
             val colonSplitter = TextUtils.SimpleStringSplitter(':')
             colonSplitter.setString(enabledServicesSetting)
-
+            android.util.Log.e("acc_step", "4")
             while (colonSplitter.hasNext()) {
                 val componentNameString = colonSplitter.next()
                 val enabledService = ComponentName.unflattenFromString(componentNameString)
 
-                if (enabledService != null && enabledService == expectedComponentName)
+                if (enabledService != null && enabledService == expectedComponentName){
+                    android.util.Log.e("acc_step", "5")
                     return true
+                }
             }
+            android.util.Log.e("acc_step", "6")
 
             Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 .apply { customFlags?.let(::addFlags) }
                 .also { context.startActivity(it) }
+
+            android.util.Log.e("acc_step", "7")
             return false
         }
     }

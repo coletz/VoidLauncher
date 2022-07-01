@@ -1,41 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-          android:keyWidth="20%p"
-          android:keyHeight="@dimen/key_height">
-    <Row>
-        <Key android:codes="87" android:keyLabel="W" android:keyEdgeFlags="left"/>
-        <Key android:codes="69" android:keyLabel="E"/>
-        <Key android:codes="82" android:keyLabel="R"/>
-        <Key android:codes="84" android:keyLabel="T"/>
-        <Key android:codes="89" android:keyLabel="Y"/>
-        <Key android:codes="85" android:keyLabel="U"/>
-        <Key android:codes="73" android:keyLabel="I"/>
-        <Key android:codes="79" android:keyLabel="O"/>
-        <Key android:codes="80" android:keyLabel="P" android:keyEdgeFlags="right"/>
+<Keyboard xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:keyWidth="20%p"
+    app:keyHeight="@dimen/key_height">
+    <Row app:rowEdgeFlags="top">
+        <Key app:codes="87" app:keyLabel="W" app:keyEdgeFlags="left"/>
+        <Key app:codes="69" app:keyLabel="E"/>
+        <Key app:codes="82" app:keyLabel="R"/>
+        <Key app:codes="84" app:keyLabel="T"/>
+        <Key app:codes="89" app:keyLabel="Y"/>
+        <Key app:codes="85" app:keyLabel="U"/>
+        <Key app:codes="73" app:keyLabel="I"/>
+        <Key app:codes="79" app:keyLabel="O"/>
+        <Key app:codes="80" app:keyLabel="P" app:keyEdgeFlags="right"/>
     </Row>
 
     <Row>
-        <Key android:codes="65" android:keyLabel="A" android:keyEdgeFlags="left"/>
-        <Key android:codes="83" android:keyLabel="S"/>
-        <Key android:codes="68" android:keyLabel="D"/>
-        <Key android:codes="70" android:keyLabel="F"/>
-        <Key android:codes="71" android:keyLabel="G"/>
-        <Key android:codes="72" android:keyLabel="H"/>
-        <Key android:codes="74" android:keyLabel="J"/>
-        <Key android:codes="75" android:keyLabel="K"/>
-        <Key android:codes="76" android:keyLabel="L" android:keyEdgeFlags="right"/>
+        <Key app:codes="65" app:keyLabel="A" app:keyEdgeFlags="left"/>
+        <Key app:codes="83" app:keyLabel="S"/>
+        <Key app:codes="68" app:keyLabel="D"/>
+        <Key app:codes="70" app:keyLabel="F"/>
+        <Key app:codes="71" app:keyLabel="G"/>
+        <Key app:codes="72" app:keyLabel="H"/>
+        <Key app:codes="74" app:keyLabel="J"/>
+        <Key app:codes="75" app:keyLabel="K"/>
+        <Key app:codes="76" app:keyLabel="L" app:keyEdgeFlags="right"/>
     </Row>
 
     <Row>
-        <Key android:codes="81" android:keyLabel="Q" android:keyEdgeFlags="left"/>
-        <Key android:codes="90" android:keyLabel="Z"/>
-        <Key android:codes="88" android:keyLabel="X"/>
-        <Key android:codes="67" android:keyLabel="C"/>
-        <Key android:codes="86" android:keyLabel="V"/>
-        <Key android:codes="66" android:keyLabel="B"/>
-        <Key android:codes="78" android:keyLabel="N"/>
-        <Key android:codes="77" android:keyLabel="M"/>
-        <Key android:codes="-5" android:keyIcon="@drawable/ic_backspace" android:isRepeatable="true" android:keyEdgeFlags="right"/>
+        <Key app:codes="81" app:keyLabel="Q" app:keyEdgeFlags="left"/>
+        <Key app:codes="90" app:keyLabel="Z"/>
+        <Key app:codes="88" app:keyLabel="X"/>
+        <Key app:codes="67" app:keyLabel="C"/>
+        <Key app:codes="86" app:keyLabel="V"/>
+        <Key app:codes="66" app:keyLabel="B"/>
+        <Key app:codes="78" app:keyLabel="N"/>
+        <Key app:codes="77" app:keyLabel="M"/>
+        <Key app:codes="-5" app:keyIcon="@drawable/ic_backspace" app:isRepeatable="true" app:keyEdgeFlags="right"/>
     </Row>
 
+    <Row app:rowEdgeFlags="bottom">
+        <Key app:codes="-9001" app:keyWidth="15%p" app:keyIcon="@drawable/ic_arrow_down" app:keyEdgeFlags="left"/>
+        <Key app:codes="32" app:keyWidth="70%p" app:popupKeyboard="@null" app:keyLabel="_____________________" />
+        <Key app:codes="-9002" app:keyWidth="15%p" app:keyIcon="@drawable/ic_recent_apps" app:keyEdgeFlags="right" />
+    </Row>
 </Keyboard>

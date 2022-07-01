@@ -2,41 +2,66 @@ package com.coletz.voidlauncher.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.coletz.voidlauncher.*
-import com.coletz.voidlauncher.models.AppObject
+import androidx.fragment.app.activityViewModels
+import com.coletz.voidlauncher.databinding.FragmentMainBinding
+import com.coletz.voidlauncher.models.AppEntity
+import com.coletz.voidlauncher.mvvm.AppViewModel
 import com.coletz.voidlauncher.utils.Accessible
 import com.coletz.voidlauncher.utils.SpaceItemDecoration
 import com.coletz.voidlauncher.views.AppsAdapter
-import kotlinx.android.synthetic.main.fragment_main.*
 
-class MainFragment: Fragment(R.layout.fragment_main) {
-    private val appsAdapter by lazy { AppsAdapter(recyclerView = apps_list) }
+class MainFragment: Fragment() {
+
+    private val appViewModel: AppViewModel by activityViewModels()
+
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = requireNotNull(_binding)
+
+    private val appsAdapter = AppsAdapter()
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        FragmentMainBinding.inflate(inflater, container, false)
+            .also { _binding = it }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        screen_off_btn.setOnClickListener { Accessible.screenOff(context) }
-        screen_off_btn.setOnLongClickListener { Accessible.openPowerDialog(context); true }
+        binding.screenOffBtn.setOnClickListener { Accessible.screenOff(context) }
+        binding.screenOffBtn.setOnLongClickListener { Accessible.openPowerDialog(context); true }
 
-        open_notification_btn.setOnClickListener { Accessible.openNotification(context) }
-        open_notification_btn.setOnLongClickListener { Accessible.openQuickSettings(context); true }
+        binding.openNotificationBtn.setOnClickListener { Accessible.openNotification(context) }
+        binding.openNotificationBtn.setOnLongClickListener { Accessible.openQuickSettings(context); true }
 
-        apps_list.addItemDecoration(SpaceItemDecoration(58))
+        binding.appsList.addItemDecoration(SpaceItemDecoration(58))
 
-        appsAdapter.onAppClicked = { it.launch(context) }
-        apps_list.adapter = appsAdapter
+        appsAdapter.onAppClicked = {  app ->
+            app.launch(context, onError = {
+                Log.e("Error", "Error launching app", it)
+                Toast.makeText(context, "Error launching app", Toast.LENGTH_LONG).show()
+                appViewModel.updateApps()
+            })
+        }
+
+        binding.appsList.adapter = appsAdapter
 
         setFavouriteApps()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun setFavouriteApps(){
         listOf(
-            AppObject("Telefono", Intent.ACTION_DIAL, isIntent = true),
-            AppObject("Chrome", "com.android.chrome"),
-            AppObject("Telegram", "org.telegram.messenger"),
-            AppObject("Twitter", "com.twitter.android")
+            AppEntity("Telefono", Intent.ACTION_DIAL, isIntent = true),
+            AppEntity("com.android.chrome", "Chrome"),
+            AppEntity("org.telegram.messenger", "Telegram"),
+            AppEntity("com.twitter.android", "Twitter")
         ).let(appsAdapter::updateApps)
     }
 }

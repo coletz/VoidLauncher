@@ -4,14 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.coletz.voidlauncher.models.AppObject
-import com.coletz.voidlauncher.models.NotificationObject
-import com.coletz.voidlauncher.mvvm.AppDao
+import com.coletz.voidlauncher.models.AppEntity
 
-@Database(entities = [NotificationObject::class], version = 1, exportSchema = false)
+@Database(entities = [AppEntity::class], version = 1, exportSchema = false)
 abstract class VoidDatabase: RoomDatabase() {
 
-    abstract fun notificationDao(): NotificationDao
+    abstract fun appEntityDao(): AppEntityDao
 
     companion object {
         @Volatile

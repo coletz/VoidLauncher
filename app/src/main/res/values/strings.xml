@@ -1,5 +1,30 @@
 <resources>
     <string name="app_name">Void Launcher</string>
     <string name="accessibility_service_label">Void Launcher</string>
-    <string name="accessibility_service_description">In order to turn the screen off and show notification panel, this needs to be enabled</string>
+    <string name="accessibility_service_description">In order to turn the screen off on older android versions, this needs to be enabled</string>
+
+    <string name="rename_option_label">Rename</string>
+    <string name="add_to_folder_option_label">Add to folder</string>
+    <string name="uninstall_option_label">Uninstall</string>
+    <string name="hide_option_label">Hide</string>
+    <string name="reload_apps_label">Reload apps</string>
+    <string name="power_menu_label">Power menu</string>
+    <string name="open_app_settings_option_label">%1$s Settings</string>
+
+
+    <!-- KeyboardView - accessibility support -->
+    <!-- Description of the Alt button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_alt">Alt</string>
+    <!-- Description of the Cancel button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_cancel">Cancel</string>
+    <!-- Description of the Delete button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_delete">Delete</string>
+    <!-- Description of the Done button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_done">Done</string>
+    <!-- Description of the Mode change button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_mode_change">Mode change</string>
+    <!-- Description of the Shift button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_shift">Shift</string>
+    <!-- Description of the Enter button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_enter">Enter</string>
 </resources>

@@ -1,92 +1,68 @@
 package com.coletz.voidlauncher.views
 
-import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.coletz.voidlauncher.R
-import com.coletz.voidlauncher.models.AppObject
-import com.coletz.voidlauncher.utils.AppsDiffUtils
+import com.coletz.voidlauncher.databinding.AppListItemBinding
+import com.coletz.voidlauncher.models.AppEntity
 import kotlin.collections.ArrayList
 
-class AppsAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapter<AppsAdapter.Holder>() {
+class AppsAdapter: ListAdapter<AppEntity, AppsAdapter.Holder>(Differ) {
 
-    private val allApps: ArrayList<AppObject> = arrayListOf()
-    private val filteredApps: ArrayList<AppObject> = arrayListOf()
+    var onAppClicked: (AppEntity) -> Unit = {}
 
-    var filter: String = ""
-        set(value) {
-            field = value
-            updateFilter()
-        }
+    var onAppLongClicked: (AppEntity) -> Boolean = { false }
 
-    var onAppClicked: (AppObject) -> Unit = {}
+    var onVisibleAppsLoaded: () -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder =
-        Holder(TextView(parent.context))
+        Holder(AppListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
-    override fun getItemCount(): Int = filteredApps.size
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
 
-        holder.bind(filteredApps[position])
+        holder.bind(getItem(position))
     }
 
-    fun updateApps(newApps: List<AppObject>) {
-
-        AppsDiffUtils.calculateDiff(allApps, newApps).dispatchUpdatesTo(this)
-
-        allApps.clear()
-        allApps.addAll(newApps)
-
-        updateFilter()
+    fun updateApps(newApps: List<AppEntity>) {
+        submitList(newApps) { onVisibleAppsLoaded() }
     }
 
-    private fun updateFilter(){
-        val oldAppList = filteredApps.clone() as List<AppObject>
+    inner class Holder(private val binding: AppListItemBinding): RecyclerView.ViewHolder(binding.root),
+        View.OnClickListener,
+        View.OnLongClickListener {
 
-        val filterPredicate: (AppObject) -> Boolean = { (name) ->
-            if (filter.isBlank()) {
-                true
-            } else {
-                name
-                    .split(" ")
-                    .any { it.startsWith(filter, ignoreCase = true) }
-            }
-        }
-
-        filteredApps.clear()
-        filteredApps.addAll(allApps.filter(filterPredicate))
-
-
-        val newAppList = filteredApps.sortedDescending()
-        AppsDiffUtils.calculateDiff(oldAppList, newAppList).dispatchUpdatesTo(this)
-
-        recyclerView.scrollToPosition(newAppList.size - 1)
-    }
-
-    inner class Holder(view: TextView): RecyclerView.ViewHolder(view), View.OnClickListener {
-
-        private lateinit var app: AppObject
-
-        private val appName = view
+        private lateinit var app: AppEntity
 
         init {
-            appName.setOnClickListener(this)
-            appName.setTextSize(TypedValue.COMPLEX_UNIT_PX, appName.context.resources.getDimension(
-                R.dimen.app_name_size
-            ))
-            appName.setLines(1)
+            itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
-        fun bind(app: AppObject){
+        fun bind(app: AppEntity){
             this.app = app
-            appName.text = app.name
+            binding.itemLabel.text = app.uiName
         }
 
         override fun onClick(v: View?) {
             onAppClicked(app)
+        }
+
+        override fun onLongClick(v: View?): Boolean =
+            onAppLongClicked(app)
+    }
+
+    object Differ: DiffUtil.ItemCallback<AppEntity>() {
+
+        override fun areContentsTheSame(oldItem: AppEntity, newItem: AppEntity): Boolean {
+            return oldItem.uiName == newItem.uiName
+        }
+
+        override fun areItemsTheSame(oldItem: AppEntity, newItem: AppEntity): Boolean {
+            return oldItem.packageName == newItem.packageName
         }
     }
 }

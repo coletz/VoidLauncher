@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/item_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:textSize="@dimen/app_name_size"
+        android:lines="1"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:minLines="1"
+        android:inputType="text"
+        />
+</FrameLayout>

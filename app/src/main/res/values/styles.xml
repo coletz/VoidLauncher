@@ -1,13 +1,15 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="android:windowBackground">@color/default_bg_color</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:textColor">@color/default_text_color</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
 
@@ -17,9 +19,20 @@
 
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowShowWallpaper">true</item>
     </style>
 
+    <style name="KeyboardView">
+        <item name="android:background">@drawable/keyboard_background</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key</item>
+        <item name="keyTextSize">22sp</item>
+        <item name="keyTextColor">#FFFFFFFF</item>
+        <item name="keyPreviewLayout">@null</item>
+        <item name="keyPreviewOffset">-12dp</item>
+        <item name="keyPreviewHeight">80dp</item>
+        <item name="labelTextSize">14sp</item>
+        <item name="verticalCorrection">-10dip</item>
+    </style>
 </resources>
