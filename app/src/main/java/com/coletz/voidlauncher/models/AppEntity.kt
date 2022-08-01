@@ -14,7 +14,8 @@ data class AppEntity(
     @ColumnInfo(name = "official_name") val officialName: String,
     @ColumnInfo(name = "edited_name") val editedName: String? = null,
     @ColumnInfo(name = "is_intent") val isIntent: Boolean = false,
-    @ColumnInfo(name = "is_hidden") val isHidden: Boolean = false
+    @ColumnInfo(name = "is_hidden") val isHidden: Boolean = false,
+    @ColumnInfo(name = "is_favorite") val isFavorite: Boolean = false
 ): Comparable<AppEntity> {
 
     val uiName: String

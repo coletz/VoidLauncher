@@ -6,7 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.coletz.voidlauncher.models.AppEntity
 
-@Database(entities = [AppEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [AppEntity::class],
+    version = 2,
+    exportSchema = true,
+    autoMigrations = []
+)
 abstract class VoidDatabase: RoomDatabase() {
 
     abstract fun appEntityDao(): AppEntityDao
@@ -25,7 +30,10 @@ abstract class VoidDatabase: RoomDatabase() {
                     context.applicationContext,
                     VoidDatabase::class.java,
                     "void_database"
-                ).build().apply { INSTANCE = this }
+                )
+                    .addMigrations(RoomMigrations.FROM_1_TO_2)
+                    .build()
+                    .apply { INSTANCE = this }
             }
         }
     }
