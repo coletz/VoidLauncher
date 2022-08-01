@@ -2,7 +2,6 @@ package com.coletz.voidlauncher.models
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -20,6 +19,9 @@ data class AppEntity(
 
     val uiName: String
         get() = editedName ?: officialName
+
+    private val strippedName: String
+        get() = uiName.replace("[^a-zA-Z0-9\\s]".toRegex(), "").trim().lowercase(Locale.getDefault())
 
     fun launch(context: Context?, onError: (Throwable) -> Unit) {
         context ?: return
@@ -45,7 +47,9 @@ data class AppEntity(
     }
 
     override fun compareTo(other: AppEntity): Int {
-        if(packageName == other.packageName) return 0
-        return uiName.lowercase(Locale.getDefault()).compareTo(other.uiName.lowercase(Locale.getDefault()))
+        if (packageName == other.packageName) return 0
+        if (this.isHidden) return -1
+        if (other.isHidden) return 1
+        return strippedName.compareTo(other.strippedName)
     }
 }
