@@ -40,6 +40,13 @@ class AppViewModel(application: Application): AndroidViewModel(application){
         }
     }
 
+    fun setFavorite(app: AppEntity, isFavorite: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.setFavorite(app, isFavorite)
+            repo.updateApps()
+        }
+    }
+
     private fun List<AppEntity>?.filterAndSort(filter: String?): List<AppEntity> {
         this ?: return emptyList()
         val trimmedFilter = filter?.trim() ?: ""

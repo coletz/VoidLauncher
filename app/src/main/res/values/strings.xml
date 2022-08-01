@@ -5,6 +5,8 @@
 
     <string name="rename_option_label">Rename</string>
     <string name="add_to_folder_option_label">Add to folder</string>
+    <string name="mark_as_favorite_option_label">Add to favorite</string>
+    <string name="unmark_as_favorite_option_label">Remove from favorite</string>
     <string name="uninstall_option_label">Uninstall</string>
     <string name="hide_option_label">Hide</string>
     <string name="reload_apps_label">Reload apps</string>

@@ -30,4 +30,8 @@ class AppRepository(
     suspend fun hide(app: AppEntity) {
         databaseAppDao.hide(app.packageName)
     }
+
+    suspend fun setFavorite(app: AppEntity, isFavorite: Boolean) {
+        databaseAppDao.setFavorite(app.packageName, isFavorite)
+    }
 }

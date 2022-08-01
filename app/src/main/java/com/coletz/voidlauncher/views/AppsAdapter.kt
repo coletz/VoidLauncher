@@ -1,14 +1,16 @@
 package com.coletz.voidlauncher.views
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.coletz.voidlauncher.R
 import com.coletz.voidlauncher.databinding.AppListItemBinding
 import com.coletz.voidlauncher.models.AppEntity
-import kotlin.collections.ArrayList
 
 class AppsAdapter: ListAdapter<AppEntity, AppsAdapter.Holder>(Differ) {
 
@@ -36,6 +38,7 @@ class AppsAdapter: ListAdapter<AppEntity, AppsAdapter.Holder>(Differ) {
         View.OnLongClickListener {
 
         private lateinit var app: AppEntity
+        private var icFavorite: Drawable? = ContextCompat.getDrawable(itemView.context, R.drawable.ic_favorite)
 
         init {
             itemView.setOnClickListener(this)
@@ -45,6 +48,12 @@ class AppsAdapter: ListAdapter<AppEntity, AppsAdapter.Holder>(Differ) {
         fun bind(app: AppEntity){
             this.app = app
             binding.itemLabel.text = app.uiName
+
+            if (app.isFavorite) {
+                binding.itemLabel.setCompoundDrawablesWithIntrinsicBounds(null, null, icFavorite, null)
+            } else {
+                binding.itemLabel.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+            }
         }
 
         override fun onClick(v: View?) {
@@ -58,7 +67,9 @@ class AppsAdapter: ListAdapter<AppEntity, AppsAdapter.Holder>(Differ) {
     object Differ: DiffUtil.ItemCallback<AppEntity>() {
 
         override fun areContentsTheSame(oldItem: AppEntity, newItem: AppEntity): Boolean {
-            return oldItem.uiName == newItem.uiName
+            return oldItem.uiName == newItem.uiName &&
+                    oldItem.isHidden == newItem.isHidden &&
+                    oldItem.isFavorite == newItem.isFavorite
         }
 
         override fun areItemsTheSame(oldItem: AppEntity, newItem: AppEntity): Boolean {

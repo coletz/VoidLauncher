@@ -22,7 +22,8 @@ class AppOptionMenu internal constructor(
     private var onAppUninstalled: (() -> Unit)?,
     private var onHideSelected: ((AppEntity) -> Unit)?,
     private var onAppRenamed: ((AppEntity) -> Unit)?,
-    private var onAppAddedToFolder: ((AppEntity) -> Unit)?
+    private var onAppAddedToFolder: ((AppEntity) -> Unit)?,
+    private var onFavoriteToggled: ((AppEntity, Boolean) -> Unit)?,
 ) {
 
     interface Provider {
@@ -44,6 +45,11 @@ class AppOptionMenu internal constructor(
             title = "${app.uiName} (${app.packageName})"
             add(R.string.rename_option_label) { context.openAppRenameDialog(app) }
             add(R.string.add_to_folder_option_label) { context.wip() }
+            if (app.isFavorite) {
+                add(R.string.unmark_as_favorite_option_label) { onFavoriteToggled?.invoke(app, false) }
+            } else {
+                add(R.string.mark_as_favorite_option_label) { onFavoriteToggled?.invoke(app, true) }
+            }
             add(R.string.uninstall_option_label) { onUninstallClicked() }
             add(R.string.hide_option_label) { onHideSelected?.invoke(app) }
         }
@@ -70,26 +76,30 @@ fun Fragment.createAppOptionMenu(
     onAppUninstalled: (() -> Unit)? = null,
     onHideSelected: ((AppEntity) -> Unit)? = null,
     onAppRenamed: ((AppEntity) -> Unit)? = null,
-    onAppAddedToFolder: ((AppEntity) -> Unit)? = null
+    onAppAddedToFolder: ((AppEntity) -> Unit)? = null,
+    onFavoriteToggled: ((AppEntity, Boolean) -> Unit)?
 ): AppOptionMenu = AppOptionMenu(
     id.toString(),
     requireActivity().activityResultRegistry,
     onAppUninstalled,
     onHideSelected,
     onAppRenamed,
-    onAppAddedToFolder
+    onAppAddedToFolder,
+    onFavoriteToggled
 )
 
 fun ComponentActivity.createAppOptionMenu(
     onAppUninstalled: (() -> Unit)? = null,
     onHideSelected: ((AppEntity) -> Unit)? = null,
     onAppRenamed: ((AppEntity) -> Unit)? = null,
-    onAppAddedToFolder: ((AppEntity) -> Unit)? = null
+    onAppAddedToFolder: ((AppEntity) -> Unit)? = null,
+    onFavoriteToggled: ((AppEntity, Boolean) -> Unit)?
 ): AppOptionMenu = AppOptionMenu(
     this::class.java.toString(),
     activityResultRegistry,
     onAppUninstalled,
     onHideSelected,
     onAppRenamed,
-    onAppAddedToFolder
+    onAppAddedToFolder,
+    onFavoriteToggled
 )

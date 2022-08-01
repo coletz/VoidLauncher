@@ -49,8 +49,10 @@ data class AppEntity(
 
     override fun compareTo(other: AppEntity): Int {
         if (packageName == other.packageName) return 0
-        if (this.isHidden) return -1
-        if (other.isHidden) return 1
+        if (this.isHidden) return 1
+        if (other.isHidden) return -1
+        if (this.isFavorite && !other.isFavorite) return -1
+        if (!this.isFavorite && other.isFavorite) return 1
         return strippedName.compareTo(other.strippedName)
     }
 }

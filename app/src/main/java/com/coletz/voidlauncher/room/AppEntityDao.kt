@@ -21,6 +21,9 @@ interface AppEntityDao {
     @Query("UPDATE app_entity SET is_hidden = 1 WHERE package_name = :packageName")
     suspend fun hide(packageName: String)
 
+    @Query("UPDATE app_entity SET is_favorite = :isFavorite WHERE package_name = :packageName")
+    suspend fun setFavorite(packageName: String, isFavorite: Boolean)
+
     @Query("UPDATE app_entity SET official_name = :officialName WHERE package_name = :packageName")
     suspend fun updateOfficialName(packageName: String, officialName: String): Int
 
