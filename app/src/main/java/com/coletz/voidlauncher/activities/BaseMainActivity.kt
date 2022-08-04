@@ -12,7 +12,7 @@ open class BaseMainActivity : AppCompatActivity(), AppOptionMenu.Provider {
 
     protected val appViewModel: AppViewModel by viewModels()
 
-    override val appOptionMenu: AppOptionMenu = createAppOptionMenu(appViewModel)
+    override val appOptionMenu: AppOptionMenu by lazy { createAppOptionMenu(appViewModel) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)

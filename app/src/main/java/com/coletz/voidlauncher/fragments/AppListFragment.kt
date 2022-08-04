@@ -64,7 +64,7 @@ class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
         appsAdapter.onAppLongClicked = {
             (activity as? AppOptionMenu.Provider)
                 ?.appOptionMenu
-                ?.open(requireContext(), it)
+                ?.open(this, it)
                 ?.let { true }
                 ?: false
         }

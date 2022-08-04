@@ -2,18 +2,17 @@ package com.coletz.voidlauncher.appoptions
 
 import android.content.Context
 import android.content.Intent
-import android.view.LayoutInflater
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import com.coletz.voidlauncher.R
-import com.coletz.voidlauncher.databinding.AppRenameDialogBinding
 import com.coletz.voidlauncher.models.AppEntity
 import com.coletz.voidlauncher.mvvm.AppViewModel
 import com.coletz.voidlauncher.utils.wip
+import com.coletz.voidlauncher.views.InputTextDialog
 import com.coletz.voidlauncher.views.multiActionDialog
 
 
@@ -31,41 +30,56 @@ class AppOptionMenu internal constructor(
         appViewModel.updateApps()
     }
 
-    fun open(context: Context, app: AppEntity) {
+    fun open(activity: ComponentActivity, app: AppEntity) {
+        open(activity, activity, app)
+    }
+
+    fun open(fragment: Fragment, app: AppEntity) {
+        open(fragment.requireContext(), fragment.viewLifecycleOwner, app)
+    }
+
+    private fun open(context: Context, lifecycleOwner: LifecycleOwner, app: AppEntity) {
+
         val onUninstallClicked: () -> Unit = {
             val packageUri = "package:${app.packageName}".toUri()
             val uninstallIntent = Intent(Intent.ACTION_DELETE, packageUri)
             appUninstallLauncher.launch(uninstallIntent)
         }
 
+        val openAppRenameDialog: () -> Unit = {
+            InputTextDialog(context)
+                .setTitle("Real name: ${app.officialName}\nPackage: ${app.packageName}")
+                .setText(app.editedName)
+                .setOnConfirmClicked { appViewModel.updateEditableName(app.packageName, editedName = it) }
+                .show()
+        }
+
+        val openTagManagerDialog: () -> Unit = {
+            val tagsLiveData = appViewModel.getAppTags(app)
+
+            val dialog = TagManagerDialog(context)
+            dialog
+                .setApp(app)
+                .setOnTagCreatedListener { appViewModel.insertTag(it) }
+                .setOnTagDeletedListener { appViewModel.deleteTag(it) }
+                .setOnDialogShown { tagsLiveData.observe(lifecycleOwner) { dialog.loadTags(it) } }
+                .setOnDialogDismissed { tagsLiveData.removeObservers(lifecycleOwner) }
+                .show()
+        }
+
         context.multiActionDialog {
             title = "${app.uiName} (${app.packageName})"
-            add(R.string.rename_option_label) { context.openAppRenameDialog(app) }
+            add(R.string.rename_option_label) { openAppRenameDialog() }
             add(R.string.add_to_folder_option_label) { context.wip() }
             if (app.isFavorite) {
                 add(R.string.unmark_as_favorite_option_label) { appViewModel.setFavorite(app, false) }
             } else {
                 add(R.string.mark_as_favorite_option_label) { appViewModel.setFavorite(app, true) }
             }
+            add(R.string.tag_manager_option_label) { openTagManagerDialog() }
             add(R.string.uninstall_option_label) { onUninstallClicked() }
             add(R.string.hide_option_label) { appViewModel.hide(app) }
         }
-    }
-
-    private fun Context.openAppRenameDialog(app: AppEntity) {
-        val binding = AppRenameDialogBinding.inflate(LayoutInflater.from(this))
-        binding.itemLabel.setText(app.editedName)
-        AlertDialog.Builder(this).apply {
-            setTitle("Real name: ${app.officialName}\nPackage: ${app.packageName}")
-            setView(binding.root)
-            setNegativeButton(android.R.string.cancel, null)
-            setPositiveButton(android.R.string.ok) { _, _ ->
-                val newName = binding.itemLabel.text.toString()
-                if (newName.isNotBlank()) {
-                    appViewModel.update(app.copy(editedName = newName))
-                }
-            }
-        }.show()
     }
 }
 

@@ -3,6 +3,8 @@ package com.coletz.voidlauncher.room
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.coletz.voidlauncher.models.AppEntity
+import com.coletz.voidlauncher.models.AppWithTagEntity
+import com.coletz.voidlauncher.models.TagEntity
 
 @Dao
 interface AppEntityDao {
@@ -10,7 +12,14 @@ interface AppEntityDao {
     fun getAllLive(): LiveData<List<AppEntity>>
 
     @Query("SELECT * FROM app_entity WHERE is_hidden = 0")
-    fun getNotHiddenLive(): LiveData<List<AppEntity>>
+    fun getVisibleAppsLive(): LiveData<List<AppEntity>>
+
+    @Query("""SELECT * FROM (
+                SELECT a.*, t.tag_name FROM app_entity a JOIN tag t ON a.package_name = t.package_name
+                UNION
+                SELECT a.*, a.edited_name FROM app_entity a
+              ) WHERE is_hidden = 0""")
+    fun getVisibleAppsWithTagsLive(): LiveData<List<AppWithTagEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertOnlyNewApps(apps: List<AppEntity>): LongArray
@@ -32,8 +41,8 @@ interface AppEntityDao {
         return apps.sumOf { updateOfficialName(it.packageName, it.officialName) }
     }
 
-    @Update
-    suspend fun update(app: AppEntity)
+    @Query("UPDATE app_entity SET edited_name = :editedName WHERE package_name = :packageName")
+    suspend fun updateEditableName(packageName: String, editedName: String)
 
     @Delete
     suspend fun delete(app: AppEntity)

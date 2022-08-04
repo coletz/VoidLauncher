@@ -12,6 +12,9 @@
         <entry key="app/src/main/res/layout/fragment_app_list.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/key_preview.xml" value="0.17135416666666667" />
         <entry key="app/src/main/res/layout/keyboard_popup_keyboard.xml" value="0.17135416666666667" />
+        <entry key="app/src/main/res/layout/tag_manager_dialog.xml" value="0.3333333333333333" />
+        <entry key="app/src/main/res/layout/tag_manager_dialog_layout.xml" value="0.3333333333333333" />
+        <entry key="app/src/main/res/layout/tag_manager_item.xml" value="0.3333333333333333" />
         <entry key="app/src/main/res/xml/ids.xml" value="0.17135416666666667" />
       </map>
     </option>
