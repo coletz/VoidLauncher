@@ -10,13 +10,9 @@ import com.coletz.voidlauncher.mvvm.AppViewModel
 
 open class BaseMainActivity : AppCompatActivity(), AppOptionMenu.Provider {
 
-    private val appViewModel: AppViewModel by viewModels()
+    protected val appViewModel: AppViewModel by viewModels()
 
-    override val appOptionMenu: AppOptionMenu = createAppOptionMenu(
-        onAppUninstalled = { appViewModel.updateApps() },
-        onHideSelected = { appViewModel.hide(it) },
-        onAppRenamed = { appViewModel.update(it) }
-    )
+    override val appOptionMenu: AppOptionMenu = createAppOptionMenu(appViewModel)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)

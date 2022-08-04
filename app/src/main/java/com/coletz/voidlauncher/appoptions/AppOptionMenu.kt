@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.coletz.voidlauncher.R
 import com.coletz.voidlauncher.databinding.AppRenameDialogBinding
 import com.coletz.voidlauncher.models.AppEntity
+import com.coletz.voidlauncher.mvvm.AppViewModel
 import com.coletz.voidlauncher.utils.wip
 import com.coletz.voidlauncher.views.multiActionDialog
 
@@ -19,11 +20,7 @@ import com.coletz.voidlauncher.views.multiActionDialog
 class AppOptionMenu internal constructor(
     uniqueId: String,
     registry: ActivityResultRegistry,
-    private var onAppUninstalled: (() -> Unit)?,
-    private var onHideSelected: ((AppEntity) -> Unit)?,
-    private var onAppRenamed: ((AppEntity) -> Unit)?,
-    private var onAppAddedToFolder: ((AppEntity) -> Unit)?,
-    private var onFavoriteToggled: ((AppEntity, Boolean) -> Unit)?,
+    private val appViewModel: AppViewModel
 ) {
 
     interface Provider {
@@ -31,7 +28,7 @@ class AppOptionMenu internal constructor(
     }
 
     private val appUninstallLauncher = registry.register(uniqueId, ActivityResultContracts.StartActivityForResult()) {
-        onAppUninstalled?.invoke()
+        appViewModel.updateApps()
     }
 
     fun open(context: Context, app: AppEntity) {
@@ -46,12 +43,12 @@ class AppOptionMenu internal constructor(
             add(R.string.rename_option_label) { context.openAppRenameDialog(app) }
             add(R.string.add_to_folder_option_label) { context.wip() }
             if (app.isFavorite) {
-                add(R.string.unmark_as_favorite_option_label) { onFavoriteToggled?.invoke(app, false) }
+                add(R.string.unmark_as_favorite_option_label) { appViewModel.setFavorite(app, false) }
             } else {
-                add(R.string.mark_as_favorite_option_label) { onFavoriteToggled?.invoke(app, true) }
+                add(R.string.mark_as_favorite_option_label) { appViewModel.setFavorite(app, true) }
             }
             add(R.string.uninstall_option_label) { onUninstallClicked() }
-            add(R.string.hide_option_label) { onHideSelected?.invoke(app) }
+            add(R.string.hide_option_label) { appViewModel.hide(app) }
         }
     }
 
@@ -65,41 +62,21 @@ class AppOptionMenu internal constructor(
             setPositiveButton(android.R.string.ok) { _, _ ->
                 val newName = binding.itemLabel.text.toString()
                 if (newName.isNotBlank()) {
-                    onAppRenamed?.invoke(app.copy(editedName = newName))
+                    appViewModel.update(app.copy(editedName = newName))
                 }
             }
         }.show()
     }
 }
 
-fun Fragment.createAppOptionMenu(
-    onAppUninstalled: (() -> Unit)? = null,
-    onHideSelected: ((AppEntity) -> Unit)? = null,
-    onAppRenamed: ((AppEntity) -> Unit)? = null,
-    onAppAddedToFolder: ((AppEntity) -> Unit)? = null,
-    onFavoriteToggled: ((AppEntity, Boolean) -> Unit)?
-): AppOptionMenu = AppOptionMenu(
+fun Fragment.createAppOptionMenu(appViewModel: AppViewModel) = AppOptionMenu(
     id.toString(),
     requireActivity().activityResultRegistry,
-    onAppUninstalled,
-    onHideSelected,
-    onAppRenamed,
-    onAppAddedToFolder,
-    onFavoriteToggled
+    appViewModel
 )
 
-fun ComponentActivity.createAppOptionMenu(
-    onAppUninstalled: (() -> Unit)? = null,
-    onHideSelected: ((AppEntity) -> Unit)? = null,
-    onAppRenamed: ((AppEntity) -> Unit)? = null,
-    onAppAddedToFolder: ((AppEntity) -> Unit)? = null,
-    onFavoriteToggled: ((AppEntity, Boolean) -> Unit)?
-): AppOptionMenu = AppOptionMenu(
+fun ComponentActivity.createAppOptionMenu(appViewModel: AppViewModel) = AppOptionMenu(
     this::class.java.toString(),
     activityResultRegistry,
-    onAppUninstalled,
-    onHideSelected,
-    onAppRenamed,
-    onAppAddedToFolder,
-    onFavoriteToggled
+    appViewModel
 )
