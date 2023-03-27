@@ -1,8 +1,6 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat">
-        <!-- Customize your theme here. -->
+    <style name="CommonAppTheme" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -11,11 +9,12 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:textColor">@color/default_text_color</item>
-        <item name="android:fontFamily">sans-serif-condensed</item>
+        <!--<item name="android:fontFamily">sans-serif-condensed</item>-->
 
         <item name="android:windowAnimationStyle">@null</item>
-
     </style>
+
+    <style name="AppTheme" parent="CommonAppTheme" />
 
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:windowNoTitle">true</item>
