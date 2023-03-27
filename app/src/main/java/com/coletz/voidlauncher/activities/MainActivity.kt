@@ -10,5 +10,9 @@ class MainActivity : BaseMainActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    override fun onBackPressed() {}
+    override fun onBackPressed() {
+        if (!appViewModel.filter.value.isNullOrBlank()) {
+            appViewModel.filter.postValue(null)
+        }
+    }
 }
