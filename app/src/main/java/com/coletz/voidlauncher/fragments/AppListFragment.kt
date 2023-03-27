@@ -11,13 +11,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.coletz.voidlauncher.appoptions.AppOptionMenu
+import com.coletz.voidlauncher.appoptions.PreferenceManagerDialog
 import com.coletz.voidlauncher.databinding.FragmentAppListBinding
 import com.coletz.voidlauncher.keyboard.Keyboard
 import com.coletz.voidlauncher.keyboard.KeyboardView
 import com.coletz.voidlauncher.mvvm.AppViewModel
+import com.coletz.voidlauncher.mvvm.PreferencesViewModel
 import com.coletz.voidlauncher.utils.*
 import com.coletz.voidlauncher.views.AppsAdapter
 import com.coletz.voidlauncher.views.multiActionDialog
@@ -30,6 +34,7 @@ class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
     private val binding get() = requireNotNull(_binding)
 
     private val appViewModel: AppViewModel by activityViewModels()
+    private val prefsViewModel: PreferencesViewModel by activityViewModels()
 
     private val appsAdapter = AppsAdapter()
 
@@ -104,6 +109,8 @@ class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
             setOnKeyboardActionListener(fragment)
         }
 
+        refreshUi()
+
         binding.settingsBtn.setOnClickListener {
             startActivity(Intent(Settings.ACTION_SETTINGS))
         }
@@ -111,7 +118,7 @@ class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
         binding.settingsBtn.setOnLongClickListener {
             multiActionDialog {
                 closeOnSelection = true
-                add(getString(R.string.open_app_settings_option_label, getString(R.string.app_name))) { requireContext().wip() }
+                add(getString(R.string.open_app_settings_option_label, getString(R.string.app_name))) { openAppSettings() }
                 add(R.string.reload_apps_label) { appViewModel.updateApps() }
                 add(R.string.power_menu_label) { Accessible.openPowerDialog(context) }
             }
@@ -126,6 +133,12 @@ class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
 
         appViewModel.apps.observe(viewLifecycleOwner, appsObserver)
         appViewModel.filter.observe(viewLifecycleOwner, filterObserver)
+    }
+
+    private fun refreshUi() {
+        binding.keyboardView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            bottomMargin = prefsViewModel.keyboardBottomMargin
+        }
     }
 
     override fun onPause() {
@@ -175,6 +188,23 @@ class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
 
     override fun swipeDown() {
         Accessible.openNotification(context)
+    }
+
+    private fun openAppSettings() {
+        PreferenceManagerDialog(requireContext()).apply {
+            val updateData = { loadPreferences(prefsViewModel.getAllPreferences()) }
+
+            setOnPreferenceUpdatedListener {
+                prefsViewModel.updatePreference(it)
+                updateData()
+                refreshUi()
+            }
+
+            updateData()
+
+            show()
+        }
+
     }
 
     private var appsObserver = Observer(appsAdapter::updateApps)

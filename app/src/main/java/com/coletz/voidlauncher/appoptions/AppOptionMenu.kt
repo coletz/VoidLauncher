@@ -48,7 +48,7 @@ class AppOptionMenu internal constructor(
         val openAppRenameDialog: () -> Unit = {
             InputTextDialog(context)
                 .setTitle("Real name: ${app.officialName}\nPackage: ${app.packageName}")
-                .setText(app.editedName)
+                .customizeInput { it.setText(app.editedName) }
                 .setOnConfirmClicked { appViewModel.updateEditableName(app.packageName, editedName = it) }
                 .show()
         }

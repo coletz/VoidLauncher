@@ -3,6 +3,7 @@ package com.coletz.voidlauncher.views
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.getSystemService
 import com.coletz.voidlauncher.databinding.InputTextDialogBinding
@@ -31,8 +32,8 @@ class InputTextDialog(context: Context) {
         builder.setTitle(title)
     }
 
-    fun setText(text: String?) = apply {
-        binding.itemLabel.setText(text)
+    fun customizeInput(block: (EditText) -> Unit) = apply {
+        block(binding.itemLabel)
     }
 
     fun setOnConfirmClicked(onConfirm: (String) -> Unit) = apply {
