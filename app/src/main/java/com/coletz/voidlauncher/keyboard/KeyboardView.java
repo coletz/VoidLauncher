@@ -26,7 +26,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -87,13 +87,13 @@ public class KeyboardView extends View implements View.OnClickListener {
          * @param primaryCode the unicode of the key being pressed. If the touch is not on a valid
          * key, the value will be zero.
          */
-        void onPress(int primaryCode);
+        default void onPress(int primaryCode){}
         /**
          * Called when the user releases a key. This is sent after the {@link #onKey} is called.
          * For keys that repeat, this is only called once.
          * @param primaryCode the code of the key that was released
          */
-        void onRelease(int primaryCode);
+        default void onRelease(int primaryCode){};
         /**
          * Send a key press to the listener.
          * @param primaryCode this is the key that was pressed
@@ -104,28 +104,28 @@ public class KeyboardView extends View implements View.OnClickListener {
          * These codes are useful to correct for accidental presses of a key adjacent to
          * the intended key.
          */
-        void onKey(int primaryCode, int[] keyCodes);
+        default void onKey(int primaryCode, int[] keyCodes){};
         /**
          * Sends a sequence of characters to the listener.
          * @param text the sequence of characters to be displayed.
          */
-        void onText(CharSequence text);
+        default void onText(CharSequence text){};
         /**
          * Called when the user quickly moves the finger from right to left.
          */
-        void swipeLeft();
+        default void swipeLeft(){};
         /**
          * Called when the user quickly moves the finger from left to right.
          */
-        void swipeRight();
+        default void swipeRight(){};
         /**
          * Called when the user quickly moves the finger from up to down.
          */
-        void swipeDown();
+        default void swipeDown(){};
         /**
          * Called when the user quickly moves the finger from down to up.
          */
-        void swipeUp();
+        default void swipeUp(){};
     }
     private static final boolean DEBUG = false;
     private static final int NOT_A_KEY = -1;
@@ -217,6 +217,7 @@ public class KeyboardView extends View implements View.OnClickListener {
     private static final String PREF_SOUND_ON = "sound_on";
 
     private Vibrator mVibrator;
+    private final long[] mVibratePattern = new long[] {1, 20};
 
     // For multi-tap
     private int mLastSentIndex;
@@ -708,7 +709,11 @@ public class KeyboardView extends View implements View.OnClickListener {
         if (mVibrator == null) {
             mVibrator = (Vibrator) getContext().getSystemService(Vibrator.class);
         }
-        mVibrator.vibrate(VibrationEffect.createOneShot(2, 160));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mVibrator.vibrate(VibrationEffect.createOneShot(2, 160));
+        } else {
+            mVibrator.vibrate(mVibratePattern, -1);
+        }
     }
 
     private int getKeyIndices(int x, int y, int[] allKeys) {

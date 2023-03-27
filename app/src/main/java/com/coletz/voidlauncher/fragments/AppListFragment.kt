@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.coletz.voidlauncher.*
-import com.coletz.voidlauncher.utils.SpaceItemDecoration
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,8 +17,7 @@ import com.coletz.voidlauncher.databinding.FragmentAppListBinding
 import com.coletz.voidlauncher.keyboard.Keyboard
 import com.coletz.voidlauncher.keyboard.KeyboardView
 import com.coletz.voidlauncher.mvvm.AppViewModel
-import com.coletz.voidlauncher.utils.Accessible
-import com.coletz.voidlauncher.utils.wip
+import com.coletz.voidlauncher.utils.*
 import com.coletz.voidlauncher.views.AppsAdapter
 import com.coletz.voidlauncher.views.multiActionDialog
 import java.util.*
@@ -142,21 +140,11 @@ class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
         }
     }
 
-    override fun onPress(code: Int) {}
-
-    override fun onRelease(code: Int) {}
-
     override fun onText(charSequence: CharSequence) {}
-
-    override fun swipeLeft() {}
-
-    override fun swipeRight() {}
 
     override fun swipeDown() {
         Accessible.openNotification(context)
     }
-
-    override fun swipeUp() {}
 
     private var appsObserver = Observer(appsAdapter::updateApps)
 
