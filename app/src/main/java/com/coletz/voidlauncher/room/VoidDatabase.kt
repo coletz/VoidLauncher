@@ -6,20 +6,23 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.coletz.voidlauncher.models.AppEntity
+import com.coletz.voidlauncher.models.FolderEntity
 import com.coletz.voidlauncher.models.TagEntity
 
 @Database(
-    entities = [AppEntity::class, TagEntity::class],
-    version = 3,
+    entities = [AppEntity::class, TagEntity::class, FolderEntity::class, FolderAppsCrossRef::class],
+    version = 4,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 2, to = 3)
+        AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4)
     ]
 )
 abstract class VoidDatabase: RoomDatabase() {
 
     abstract fun appEntityDao(): AppEntityDao
     abstract fun tagEntityDao(): TagEntityDao
+    abstract fun folderEntityDao(): FolderEntityDao
 
     companion object {
         @Volatile

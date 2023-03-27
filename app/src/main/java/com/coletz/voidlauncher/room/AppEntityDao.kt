@@ -14,12 +14,13 @@ interface AppEntityDao {
     @Query("SELECT * FROM app_entity WHERE is_hidden = 0")
     fun getVisibleAppsLive(): LiveData<List<AppEntity>>
 
+    @Transaction
     @Query("""SELECT * FROM (
                 SELECT a.*, t.tag_name FROM app_entity a JOIN tag t ON a.package_name = t.package_name
                 UNION
                 SELECT a.*, a.edited_name FROM app_entity a
               ) WHERE is_hidden = 0""")
-    fun getVisibleAppsWithTagsLive(): LiveData<List<AppWithTagEntity>>
+    fun getVisibleAppsWithTagsLive(): LiveData<List<AppWithFolders>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertOnlyNewApps(apps: List<AppEntity>): LongArray

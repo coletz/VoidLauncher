@@ -4,7 +4,7 @@
     <string name="accessibility_service_description">In order to turn the screen off on older android versions, this needs to be enabled</string>
 
     <string name="rename_option_label">Rename</string>
-    <string name="add_to_folder_option_label">Add to folder</string>
+    <string name="folder_manager_option_label">Folder manager</string>
     <string name="mark_as_favorite_option_label">Add to favorite</string>
     <string name="unmark_as_favorite_option_label">Remove from favorite</string>
     <string name="tag_manager_option_label">Tag Manager</string>

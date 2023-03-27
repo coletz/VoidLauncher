@@ -112,11 +112,11 @@ class TagManagerDialog(context: Context) {
         private object Differ: DiffUtil.ItemCallback<TagEntity>() {
 
             override fun areContentsTheSame(oldItem: TagEntity, newItem: TagEntity): Boolean {
-                return oldItem == newItem
+                return oldItem.tagName == newItem.tagName
             }
 
             override fun areItemsTheSame(oldItem: TagEntity, newItem: TagEntity): Boolean {
-                return oldItem == newItem
+                return oldItem.tagName == newItem.tagName && oldItem.packageName == newItem.packageName
             }
         }
     }

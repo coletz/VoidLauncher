@@ -10,7 +10,7 @@ class TagRepository(
 ) {
 
     fun getAppTags(appEntity: AppEntity): LiveData<List<TagEntity>> =
-        databaseTagDao.getTagsByPackageNameLive(appEntity.packageName)
+        databaseTagDao.getTagsByPackageName(appEntity.packageName)
 
     suspend fun insertTag(tag: TagEntity) {
         databaseTagDao.insert(tag)

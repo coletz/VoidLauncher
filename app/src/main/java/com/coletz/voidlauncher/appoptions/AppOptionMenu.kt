@@ -11,7 +11,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.coletz.voidlauncher.R
 import com.coletz.voidlauncher.models.AppEntity
 import com.coletz.voidlauncher.mvvm.AppViewModel
-import com.coletz.voidlauncher.utils.wip
 import com.coletz.voidlauncher.views.InputTextDialog
 import com.coletz.voidlauncher.views.multiActionDialog
 
@@ -67,10 +66,23 @@ class AppOptionMenu internal constructor(
                 .show()
         }
 
+        val openFolderManagerDialog: () -> Unit = {
+            val foldersLiveData = appViewModel.getFoldersWithApps()
+
+            val dialog = FolderManagerDialog(context)
+            dialog
+                .setApp(app)
+                .setOnFolderCreatedListener { app, folder -> appViewModel.addAppInFolder(app, folder) }
+                .setOnFolderDeletedListener { app, folder -> appViewModel.removeAppFromFolder(app, folder) }
+                .setOnDialogShown { foldersLiveData.observe(lifecycleOwner) { dialog.loadFolders(it) } }
+                .setOnDialogDismissed { foldersLiveData.removeObservers(lifecycleOwner) }
+                .show()
+        }
+
         context.multiActionDialog {
             title = "${app.uiName} (${app.packageName})"
             add(R.string.rename_option_label) { openAppRenameDialog() }
-            add(R.string.add_to_folder_option_label) { context.wip() }
+            add(R.string.folder_manager_option_label) { openFolderManagerDialog() }
             if (app.isFavorite) {
                 add(R.string.unmark_as_favorite_option_label) { appViewModel.setFavorite(app, false) }
             } else {

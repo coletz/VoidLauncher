@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.coletz.voidlauncher.appoptions.AppOptionMenu
@@ -21,6 +22,7 @@ import com.coletz.voidlauncher.utils.*
 import com.coletz.voidlauncher.views.AppsAdapter
 import com.coletz.voidlauncher.views.multiActionDialog
 import java.util.*
+import kotlin.collections.ArrayList
 
 class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
 
@@ -38,6 +40,29 @@ class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
         set(value) {
             appViewModel.filter.postValue(value)
         }
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            SpeechRecognizerManager.getOrCreate(this).toggleMic()
+        } else {
+            SpeechRecognizerManager.errorMissingPermission(requireContext())
+        }
+    }
+
+    private val speechResultListener: (ArrayList<String>) -> Boolean = { queryStrings ->
+        val app = appViewModel.guessApp(queryStrings)
+        if (app == null) {
+            filter = queryStrings.joinToString(" ").uppercase().trim()
+            false
+        } else {
+            app.launch(context, onError = {
+                Log.e("Error", "Error launching app", it)
+                Toast.makeText(context, "Error launching app", Toast.LENGTH_LONG).show()
+                appViewModel.updateApps()
+            })
+            true
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         FragmentAppListBinding.inflate(inflater, container, false)
@@ -91,6 +116,12 @@ class AppListFragment: Fragment(), KeyboardView.OnKeyboardActionListener {
                 add(R.string.power_menu_label) { Accessible.openPowerDialog(context) }
             }
             true
+        }
+
+        binding.microphoneBtn.setOnClickListener {
+            SpeechRecognizerManager.getOrCreate(this)
+                .setSpeechResultListener(speechResultListener)
+                .toggleMic(requestPermissionLauncher)
         }
 
         appViewModel.apps.observe(viewLifecycleOwner, appsObserver)

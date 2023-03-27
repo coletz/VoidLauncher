@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.coletz.voidlauncher.models.AppEntity
 import com.coletz.voidlauncher.models.AppWithTagEntity
 import com.coletz.voidlauncher.room.AppEntityDao
+import com.coletz.voidlauncher.room.AppWithFolders
 
 class AppRepository(
     private val packageManagerDao: PackageManagerDao,
@@ -26,7 +27,7 @@ class AppRepository(
         databaseAppDao.updateEditableName(packageName, editedName)
     }
 
-    fun getVisibleApps(): LiveData<List<AppWithTagEntity>> = databaseAppDao.getVisibleAppsWithTagsLive()
+    fun getVisibleApps(): LiveData<List<AppWithFolders>> = databaseAppDao.getVisibleAppsWithTagsLive()
 
     suspend fun hide(app: AppEntity) {
         databaseAppDao.hide(app.packageName)
