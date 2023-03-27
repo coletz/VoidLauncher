@@ -1,7 +1,6 @@
 package com.coletz.voidlauncher.utils
 
 import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.GestureDescription
 import android.content.Context
 import android.content.Intent
 import android.view.accessibility.AccessibilityEvent
@@ -10,8 +9,6 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.text.TextUtils
 import android.provider.Settings.Secure
 import android.provider.Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.provider.Settings
 
 
@@ -66,31 +63,25 @@ class Accessible : AccessibilityService() {
         fun screenshot(context: Context?) = run(context, GLOBAL_ACTION_TAKE_SCREENSHOT)
 
         fun requestAccessibilityEnabled(context: Context, customFlags: Int? = null): Boolean {
-            android.util.Log.e("acc_step", "1")
             val expectedComponentName = ComponentName(context, Accessible::class.java)
-            android.util.Log.e("acc_step", "2")
             val enabledServicesSetting = Secure.getString(context.contentResolver, ENABLED_ACCESSIBILITY_SERVICES)
-                ?: return false
-            android.util.Log.e("acc_step", "3")
-            val colonSplitter = TextUtils.SimpleStringSplitter(':')
-            colonSplitter.setString(enabledServicesSetting)
-            android.util.Log.e("acc_step", "4")
-            while (colonSplitter.hasNext()) {
-                val componentNameString = colonSplitter.next()
-                val enabledService = ComponentName.unflattenFromString(componentNameString)
+            if (enabledServicesSetting != null) {
+                val colonSplitter = TextUtils.SimpleStringSplitter(':')
+                colonSplitter.setString(enabledServicesSetting)
+                while (colonSplitter.hasNext()) {
+                    val componentNameString = colonSplitter.next()
+                    val enabledService = ComponentName.unflattenFromString(componentNameString)
 
-                if (enabledService != null && enabledService == expectedComponentName){
-                    android.util.Log.e("acc_step", "5")
-                    return true
+                    if (enabledService != null && enabledService == expectedComponentName){
+                        return true
+                    }
                 }
             }
-            android.util.Log.e("acc_step", "6")
 
             Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 .apply { customFlags?.let(::addFlags) }
                 .also { context.startActivity(it) }
 
-            android.util.Log.e("acc_step", "7")
             return false
         }
     }
