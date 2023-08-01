@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
-    tableName = "tag",
+    tableName = "tag_entity",
     primaryKeys = ["package_name", "tag_name"],
     foreignKeys = [ForeignKey(
         entity = AppEntity::class,

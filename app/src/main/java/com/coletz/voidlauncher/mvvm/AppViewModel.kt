@@ -6,6 +6,10 @@ import com.coletz.voidlauncher.models.AppEntity
 import com.coletz.voidlauncher.models.FolderEntity
 import com.coletz.voidlauncher.models.TagEntity
 import com.coletz.voidlauncher.room.*
+import com.coletz.voidlauncher.room.dao.FolderEntityDao
+import com.coletz.voidlauncher.room.dao.TagEntityDao
+import com.coletz.voidlauncher.room.entities.AppWithTagAndFolder
+import com.coletz.voidlauncher.room.entities.FolderWithApps
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.ArrayList
@@ -22,7 +26,7 @@ class AppViewModel(application: Application): AndroidViewModel(application){
     private val tagRepo: TagRepository = TagRepository(databaseTagDao)
     private val folderRepo: FolderRepository = FolderRepository(databaseFolderDao)
 
-    private val allApps: LiveData<List<AppWithFolders>> = appRepo.getVisibleApps()
+    private val allApps: LiveData<List<AppWithTagAndFolder>> = appRepo.getVisibleApps()
     val filter: MutableLiveData<String> = MutableLiveData()
     val apps = MediatorLiveData<List<AppEntity>>().apply {
         addSource(allApps) { value = it.filterAndSort(filter.value) }
@@ -89,14 +93,14 @@ class AppViewModel(application: Application): AndroidViewModel(application){
         }
     }
 
-    private fun List<AppWithFolders>?.filterAndSort(filter: String?): List<AppEntity> {
+    private fun List<AppWithTagAndFolder>?.filterAndSort(filter: String?): List<AppEntity> {
         this ?: return emptyList()
         val trimmedFilter = filter?.trim() ?: ""
-        val filterPredicate: (AppWithFolders) -> Boolean = { item ->
+        val filterPredicate: (AppWithTagAndFolder) -> Boolean = { item ->
             if (trimmedFilter.isBlank()) {
                 true
             } else {
-                (item.app.tagName ?: item.app.uiName).split(" ").any { it.startsWith(trimmedFilter, ignoreCase = true) }
+                (item.tagName ?: item.app.uiName).split(" ").any { it.startsWith(trimmedFilter, ignoreCase = true) }
             }
         }
 

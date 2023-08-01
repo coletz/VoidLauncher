@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(tableName = "app_entity")
-open class AppEntity(
+class AppEntity(
     @PrimaryKey
     @ColumnInfo(name = "package_name") val packageName: String,
     @ColumnInfo(name = "official_name") val officialName: String,

@@ -8,15 +8,15 @@ import androidx.room.RoomDatabase
 import com.coletz.voidlauncher.models.AppEntity
 import com.coletz.voidlauncher.models.FolderEntity
 import com.coletz.voidlauncher.models.TagEntity
+import com.coletz.voidlauncher.room.dao.AppEntityDao
+import com.coletz.voidlauncher.room.dao.FolderEntityDao
+import com.coletz.voidlauncher.room.dao.TagEntityDao
+import com.coletz.voidlauncher.models.FoldersAppsCrossRef
 
 @Database(
-    entities = [AppEntity::class, TagEntity::class, FolderEntity::class, FolderAppsCrossRef::class],
-    version = 4,
-    exportSchema = true,
-    autoMigrations = [
-        AutoMigration(from = 2, to = 3),
-        AutoMigration(from = 3, to = 4)
-    ]
+    entities = [AppEntity::class, TagEntity::class, FolderEntity::class, FoldersAppsCrossRef::class],
+    version = 1,
+    exportSchema = true
 )
 abstract class VoidDatabase: RoomDatabase() {
 
@@ -39,7 +39,6 @@ abstract class VoidDatabase: RoomDatabase() {
                     VoidDatabase::class.java,
                     "void_database"
                 )
-                    .addMigrations(RoomMigrations.FROM_1_TO_2)
                     .build()
                     .apply { INSTANCE = this }
             }

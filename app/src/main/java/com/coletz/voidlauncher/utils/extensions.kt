@@ -1,8 +1,6 @@
 package com.coletz.voidlauncher.utils
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 
 fun <T> T.debug(tag: Any? = null): T = apply {
     Log.e(tag?.toString() ?: "[DEBUG]", this?.toString() ?: "[NULL]")

@@ -3,7 +3,7 @@ package com.coletz.voidlauncher.mvvm
 import androidx.lifecycle.LiveData
 import com.coletz.voidlauncher.models.AppEntity
 import com.coletz.voidlauncher.models.TagEntity
-import com.coletz.voidlauncher.room.TagEntityDao
+import com.coletz.voidlauncher.room.dao.TagEntityDao
 
 class TagRepository(
     private val databaseTagDao: TagEntityDao,

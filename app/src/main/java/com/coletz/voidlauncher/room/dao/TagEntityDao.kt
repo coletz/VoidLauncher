@@ -1,4 +1,4 @@
-package com.coletz.voidlauncher.room
+package com.coletz.voidlauncher.room.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -7,7 +7,7 @@ import com.coletz.voidlauncher.models.TagEntity
 @Dao
 interface TagEntityDao {
 
-    @Query("SELECT * FROM tag WHERE package_name = :packageName")
+    @Query("SELECT * FROM tag_entity WHERE package_name = :packageName")
     fun getTagsByPackageName(packageName: String): LiveData<List<TagEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

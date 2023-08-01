@@ -1,35 +1,47 @@
-package com.coletz.voidlauncher.room
+package com.coletz.voidlauncher.room.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.coletz.voidlauncher.models.AppEntity
-import com.coletz.voidlauncher.models.AppWithTagEntity
-import com.coletz.voidlauncher.models.TagEntity
+import com.coletz.voidlauncher.room.entities.AppWithTagAndFolder
 
 @Dao
 interface AppEntityDao {
-    @Query("SELECT * FROM app_entity")
-    fun getAllLive(): LiveData<List<AppEntity>>
-
-    @Query("SELECT * FROM app_entity WHERE is_hidden = 0")
-    fun getVisibleAppsLive(): LiveData<List<AppEntity>>
-
     @Transaction
-    @Query("""SELECT * FROM (
-                SELECT a.*, t.tag_name FROM app_entity a JOIN tag t ON a.package_name = t.package_name
-                UNION
-                SELECT a.*, a.edited_name FROM app_entity a
-              ) WHERE is_hidden = 0""")
-    fun getVisibleAppsWithTagsLive(): LiveData<List<AppWithFolders>>
+    @Query("""
+        WITH app_with_folder AS (SELECT * FROM (
+            SELECT f.folder_id as folder_id,
+                   f.name      as folder_name,
+                   a.*
+            FROM folder_entity f
+            LEFT JOIN folders_apps_cross_ref ref USING (folder_id)
+            JOIN app_entity a USING (package_name)
+        
+            UNION ALL
+        
+            SELECT NULL AS folder_id,
+                   NULL AS folder_name,
+                   a.*
+            FROM app_entity a
+            LEFT JOIN folders_apps_cross_ref ref USING (package_name)
+            WHERE ref.folder_id IS NULL
+        ))
+        SELECT * FROM (
+            SELECT t.tag_name, a.* FROM app_with_folder a JOIN tag_entity t USING(package_name)
+            UNION
+            SELECT null, a.* FROM app_with_folder a
+        ) WHERE is_hidden = 0;
+    """)
+    fun getVisibleAppsWithTagsLive(): LiveData<List<AppWithTagAndFolder>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertOnlyNewApps(apps: List<AppEntity>): LongArray
 
     @Query("UPDATE app_entity SET is_hidden = 0 WHERE package_name = :packageName")
-    suspend fun show(packageName: String)
+    suspend fun show(packageName: String): Int
 
     @Query("UPDATE app_entity SET is_hidden = 1 WHERE package_name = :packageName")
-    suspend fun hide(packageName: String)
+    suspend fun hide(packageName: String): Int
 
     @Query("UPDATE app_entity SET is_favorite = :isFavorite WHERE package_name = :packageName")
     suspend fun setFavorite(packageName: String, isFavorite: Boolean)

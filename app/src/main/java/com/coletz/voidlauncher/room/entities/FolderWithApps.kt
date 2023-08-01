@@ -1,9 +1,10 @@
-package com.coletz.voidlauncher.room
+package com.coletz.voidlauncher.room.entities
 
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 import com.coletz.voidlauncher.models.AppEntity
+import com.coletz.voidlauncher.models.FoldersAppsCrossRef
 import com.coletz.voidlauncher.models.FolderEntity
 
 data class FolderWithApps(
@@ -11,7 +12,7 @@ data class FolderWithApps(
     @Relation(
         parentColumn = "folder_id",
         entityColumn = "package_name",
-        associateBy = Junction(FolderAppsCrossRef::class)
+        associateBy = Junction(FoldersAppsCrossRef::class)
     )
     val apps: List<AppEntity>
 )

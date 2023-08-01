@@ -11,7 +11,7 @@ import com.coletz.voidlauncher.databinding.FolderManagerDialogBinding
 import com.coletz.voidlauncher.databinding.FolderManagerItemBinding
 import com.coletz.voidlauncher.models.AppEntity
 import com.coletz.voidlauncher.models.FolderEntity
-import com.coletz.voidlauncher.room.FolderWithApps
+import com.coletz.voidlauncher.room.entities.FolderWithApps
 import com.coletz.voidlauncher.views.InputTextDialog
 
 
