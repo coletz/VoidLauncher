@@ -32,4 +32,5 @@
     <!-- Description of the Enter button in a KeyboardView. [CHAR LIMIT=NONE] -->
     <string name="keyboardview_keycode_enter">Enter</string>
     <string name="new_tag_button">New</string>
+    <string name="android_settings">Android Settings</string>
 </resources>

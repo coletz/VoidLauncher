@@ -42,14 +42,15 @@
             tools:listitem="@layout/app_list_item" />
 
     <View
-            app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:background="@color/default_text_color"
-            android:layout_width="0dp"
-            android:layout_height="1dp"/>
+        android:id="@+id/keyboard_separator"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/default_text_color"
+        android:layout_width="0dp"
+        android:layout_height="1dp"/>
 
-    <com.coletz.voidlauncher.keyboard.KeyboardView
+    <dev.coletz.voidlauncher.keyboard.KeyboardView
             android:id="@+id/keyboard_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -63,7 +64,7 @@
             app:keyBackground="@android:color/transparent"
             android:background="@null" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/settings_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -74,7 +75,7 @@
             app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
             app:layout_constraintVertical_bias=".075" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/microphone_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"

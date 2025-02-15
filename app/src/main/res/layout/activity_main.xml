@@ -14,7 +14,7 @@
         android:id="@+id/app_list_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.coletz.voidlauncher.fragments.AppListFragment"
+        android:name="dev.coletz.voidlauncher.fragments.AppListFragment"
         />
 
 </FrameLayout>
