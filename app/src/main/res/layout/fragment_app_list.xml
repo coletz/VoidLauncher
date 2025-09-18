@@ -1,88 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_right"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent=".86"/>
+        android:id="@+id/guideline_right"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".86" />
 
     <TextView
-            android:id="@+id/filter_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+        android:id="@+id/filter_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/default_text_color"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="true"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/apps_list"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
-            app:layout_constraintTop_toTopOf="parent"
-            android:paddingHorizontal="24dp"
-            android:paddingBottom="32dp"
-            android:paddingTop="4dp"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            app:stackFromEnd="true"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/app_list_item" />
+        android:id="@+id/apps_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="32dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:stackFromEnd="true"
+        tools:listitem="@layout/app_list_item" />
 
     <View
         android:id="@+id/keyboard_separator"
-        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/default_text_color"
         android:layout_width="0dp"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:background="@color/default_text_color"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <dev.coletz.voidlauncher.keyboard.KeyboardView
-            android:id="@+id/keyboard_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="46dp"
-            app:keyPreviewLayout="@null"
-            app:keyPreviewOffset="@dimen/key_height"
-            app:keyPreviewHeight="@dimen/preview_height"
-            app:keyBackground="@android:color/transparent"
-            android:background="@null" />
+        android:id="@+id/keyboard_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="46dp"
+        android:background="@null"
+        app:keyBackground="@android:color/transparent"
+        app:keyPreviewHeight="@dimen/preview_height"
+        app:keyPreviewLayout="@null"
+        app:keyPreviewOffset="@dimen/key_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/settings_btn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:padding="8dp"
-            app:srcCompat="@drawable/ic_settings"
-            app:layout_constraintStart_toStartOf="@+id/guideline_right"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
-            app:layout_constraintVertical_bias=".075" />
+        android:id="@+id/settings_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/keyboard_view"
+        app:layout_constraintStart_toStartOf="@+id/guideline_right"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".075"
+        app:srcCompat="@drawable/ic_settings"
+        app:tint="@color/default_text_color" />
 
     <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/microphone_btn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:padding="8dp"
-            android:layout_marginTop="12dp"
-            app:srcCompat="@drawable/ic_microphone"
-            app:layout_constraintStart_toStartOf="@+id/guideline_right"
-            app:layout_constraintTop_toBottomOf="@id/settings_btn" />
+        android:id="@+id/microphone_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_right"
+        app:layout_constraintTop_toBottomOf="@id/settings_btn"
+        app:srcCompat="@drawable/ic_microphone"
+        app:tint="@color/default_text_color" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

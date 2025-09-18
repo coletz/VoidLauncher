@@ -9,4 +9,5 @@
         android:singleLine="true"
         android:maxLines="1"
         android:minLines="1"
+        android:textColor="@color/default_text_color"
         />

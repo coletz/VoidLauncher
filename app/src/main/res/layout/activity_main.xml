@@ -8,6 +8,7 @@
     android:fitsSystemWindows="true"
     android:animateLayoutChanges="true"
     tools:context=".activities.MainActivity"
+    android:background="@color/main_background_color"
     >
 
     <fragment

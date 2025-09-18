@@ -3,7 +3,6 @@ package dev.coletz.voidlauncher.fragments
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -15,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -66,7 +66,9 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
     }
 
     private val speechResultListener: (List<String>) -> Boolean = { queryStrings ->
-        microphoneBtn.imageTintList = ColorStateList.valueOf(Color.WHITE)
+        context?.let { ctx ->
+            microphoneBtn.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(ctx, R.color.default_text_color))
+        }
         appViewModel.guessApp(queryStrings) { app ->
             if (app == null) {
                 filter = queryStrings.joinToString(" ").uppercase().trim()
@@ -154,7 +156,9 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
 
     private fun startVoiceRecorder() {
         vibrator.vibrate(VibrationEffect.createOneShot(75, 75))
-        microphoneBtn.imageTintList = ColorStateList.valueOf(Color.RED)
+        context?.let { ctx ->
+            microphoneBtn.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(ctx, R.color.mic_active_color))
+        }
         SpeechRecognizerManager.getOrCreate(this)
             .setSpeechResultListener(speechResultListener)
             .toggleMic(requestPermissionLauncher)
