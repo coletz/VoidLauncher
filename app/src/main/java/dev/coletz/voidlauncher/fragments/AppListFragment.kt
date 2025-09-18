@@ -31,6 +31,7 @@ import dev.coletz.voidlauncher.mvvm.PreferencesViewModel
 import dev.coletz.voidlauncher.utils.*
 import dev.coletz.voidlauncher.views.AppUiItem
 import dev.coletz.voidlauncher.views.AppsAdapter
+import dev.coletz.voidlauncher.views.MainListUiItem
 import dev.coletz.voidlauncher.views.multiActionDialog
 import java.util.*
 
@@ -128,7 +129,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
             multiActionDialog {
                 closeOnSelection = true
                 add(R.string.android_settings) { startActivity(Intent(Settings.ACTION_SETTINGS)) }
-                add(getString(R.string.open_app_settings_option_label, getString(R.string.app_name))) { openAppSettings() }
+                add(R.string.open_app_settings_option_label) { openAppSettings() }
                 add(R.string.reload_apps_label) { appViewModel.updateApps() }
                 add(R.string.power_menu_label) { Accessible.openPowerDialog(context) }
             }
@@ -139,6 +140,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
         }
 
         appViewModel.apps.observe(viewLifecycleOwner, appsObserver)
+        appViewModel.singleApp.observe(viewLifecycleOwner, singleAppLauncher)
         appViewModel.filter.observe(viewLifecycleOwner, filterObserver)
     }
 
@@ -240,6 +242,13 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
     }
 
     private var appsObserver = Observer(appsAdapter::updateApps)
+
+    private var singleAppLauncher: Observer<AppUiItem?> = Observer({ app ->
+        app ?: return@Observer
+        if (prefsViewModel.autoLaunchOnSingleAppFound) {
+            launchApp(app)
+        }
+    })
 
     private var filterObserver = Observer<String?> {
         filterView.text = it ?: ""

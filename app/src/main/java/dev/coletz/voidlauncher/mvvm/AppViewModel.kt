@@ -39,6 +39,12 @@ class AppViewModel(application: Application): AndroidViewModel(application){
         addSource(filter) { value = allApps.value.mapFilterAndSort(it, expandedFolderIds.value) }
         addSource(expandedFolderIds) { value = allApps.value.mapFilterAndSort(filter.value, it) }
     }
+    val singleApp: LiveData<AppUiItem?> = apps.map {
+        it
+            ?.takeIf { it.size == 1 }
+            ?.filterIsInstance<AppUiItem>()
+            ?.first()
+    }
 
     fun updateApps() {
         viewModelScope.launch(Dispatchers.IO) {

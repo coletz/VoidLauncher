@@ -19,11 +19,13 @@ class PreferencesViewModel(application: Application): AndroidViewModel(applicati
 
             val KEYBOARD_BOTTOM_MARGIN = Preference.Info.int("key.KBD_BOTTOM_MARGIN", "Bottom keyboard margin (px)")
             val VIBRATE_ON_KEYPRESS = Preference.Info.bool("key.VIBRATE_KEYPRESS", "Vibrate on keypress")
+            val AUTO_LAUNCH_IF_SINGLE_APP_FOUND = Preference.Info.bool("key.AUTO_LAUNCH_IF_SINGLE_APP", "Auto launch if single app found")
             val CUSTOM_ACTIONS = customKeyManager.getCustomKeys().map { Preference.Info.enum("$CUSTOM_ACTION_BASE_KEY${it.id}", it.label, CustomAction.entries) }
 
             val ALL: Array<Preference.Info> = arrayOf(
                 KEYBOARD_BOTTOM_MARGIN,
                 VIBRATE_ON_KEYPRESS,
+                AUTO_LAUNCH_IF_SINGLE_APP_FOUND,
                 *CUSTOM_ACTIONS.toTypedArray()
             )
         }
@@ -57,6 +59,9 @@ class PreferencesViewModel(application: Application): AndroidViewModel(applicati
 
     val vibrateOnKeypress: Boolean
         get() = prefs.getString(AllPrefsInfo.VIBRATE_ON_KEYPRESS.key,"")?.toBooleanStrictOrNull() ?: true
+
+    val autoLaunchOnSingleAppFound: Boolean
+        get() = prefs.getString(AllPrefsInfo.AUTO_LAUNCH_IF_SINGLE_APP_FOUND.key,"")?.toBooleanStrictOrNull() ?: true
 
     fun getCustomActionByKey(keyPrimaryCode: Int): CustomAction {
         val actionId = customKeyManager.getCustomKeyByCode(keyPrimaryCode).id

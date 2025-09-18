@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Void Launcher</string>
-    <string name="accessibility_service_label">Void Launcher</string>
+    <string name="accessibility_service_label">@string/app_name</string>
     <string name="accessibility_service_description">In order to turn the screen off on older android versions, this needs to be enabled</string>
 
     <string name="rename_option_label">Rename</string>
@@ -12,7 +12,7 @@
     <string name="hide_option_label">Hide</string>
     <string name="reload_apps_label">Reload apps</string>
     <string name="power_menu_label">Power menu</string>
-    <string name="open_app_settings_option_label">%1$s Settings</string>
+    <string name="open_app_settings_option_label">Void Launcher Settings</string>
     <string name="close_label">Close</string>
 
 
