@@ -172,6 +172,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
 
     override fun onKey(primaryCode: Int, keyCodes: IntArray) {
         when (primaryCode) {
+            0 -> { /* ignore, on MinimalPhone it is used for volume and refresh keys */ }
             Keyboard.KEYCODE_DELETE -> {
                 val filterLength = filter.count()
                 if(filterLength > 0) {
