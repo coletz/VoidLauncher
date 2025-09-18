@@ -25,6 +25,7 @@ import dev.coletz.voidlauncher.appoptions.AppOptionMenu
 import dev.coletz.voidlauncher.appoptions.PreferenceManagerDialog
 import dev.coletz.voidlauncher.keyboard.Keyboard
 import dev.coletz.voidlauncher.keyboard.KeyboardView
+import dev.coletz.voidlauncher.keyboard.deviceWithPhysicalKeyboard
 import dev.coletz.voidlauncher.mvvm.AppViewModel
 import dev.coletz.voidlauncher.mvvm.PreferencesViewModel
 import dev.coletz.voidlauncher.utils.*
@@ -234,6 +235,6 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
     }
 
     private fun hasPhysicalKeyboard(): Boolean {
-        return resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY
+        return deviceWithPhysicalKeyboard || resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY
     }
 }
