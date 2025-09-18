@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">@color/default_bg_color</color>
     <color name="colorAccent">#E31F36</color>
 
+    <color name="main_background_color">@android:color/transparent</color>
+
     <color name="default_bg_color">#000</color>
     <color name="default_text_color">#FFF</color>
+
+    <color name="mic_active_color">#F00</color>
 </resources>

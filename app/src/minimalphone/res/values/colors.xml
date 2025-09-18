@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/default_text_color</color>
+    <color name="colorPrimaryDark">@color/default_bg_color</color>
+    <color name="colorAccent">#E31F36</color>
+
+    <color name="main_background_color">@color/default_bg_color</color>
+
+    <color name="default_bg_color">#FFF</color>
+    <color name="default_text_color">#000</color>
+
+    <color name="mic_active_color">#000</color>
+</resources>

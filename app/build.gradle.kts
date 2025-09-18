@@ -60,6 +60,34 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
+
+    flavorDimensions += "env"
+    productFlavors {
+        create("softwarekeyboard") {
+            dimension = "env"
+        }
+
+        create("blackberry") {
+            dimension = "env"
+        }
+
+        create("minimalphone") {
+            dimension = "env"
+        }
+    }
+
+    val BASE_APP_NAME = "Void Launcher"
+
+    applicationVariants.all {
+        if (buildType.name == "debug") {
+            val newLabel = when (flavorName) {
+                "blackberry" -> "$BASE_APP_NAME for BB"
+                "minimalphone" -> "$BASE_APP_NAME for Minimal"
+                else -> BASE_APP_NAME
+            }
+            resValue("string", "app_name", newLabel)
+        }
+    }
 }
 
 ksp {
