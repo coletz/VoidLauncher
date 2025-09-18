@@ -18,7 +18,6 @@ import dev.coletz.voidlauncher.views.MainListUiItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.ArrayList
 
 class AppViewModel(application: Application): AndroidViewModel(application){
 
