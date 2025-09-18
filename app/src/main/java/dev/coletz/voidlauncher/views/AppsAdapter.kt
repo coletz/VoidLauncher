@@ -1,5 +1,6 @@
 package dev.coletz.voidlauncher.views
 
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -61,7 +62,14 @@ class AppsAdapter: ListAdapter<MainListUiItem, AppsAdapter.Holder>(Differ) {
     inner class Holder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
 
         private lateinit var item: MainListUiItem
-        private var icFavorite: Drawable? = ContextCompat.getDrawable(itemView.context, R.drawable.ic_favorite)
+        private val icFavorite: Drawable? by lazy {
+            ContextCompat.getDrawable(itemView.context, R.drawable.ic_favorite)
+                ?.mutate()
+                ?.also {
+                    it.setTint(ContextCompat.getColor(itemView.context, R.color.default_text_color))
+                    it.setTintMode(PorterDuff.Mode.SRC_IN)
+                }
+        }
 
         private val itemLabel: TextView = itemView.findViewById(R.id.item_label)
 
