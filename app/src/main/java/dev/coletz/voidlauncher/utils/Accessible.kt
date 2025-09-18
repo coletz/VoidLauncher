@@ -3,6 +3,7 @@ package dev.coletz.voidlauncher.utils
 import android.accessibilityservice.AccessibilityService
 import android.app.Activity
 import android.app.admin.DevicePolicyManager
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -11,8 +12,10 @@ import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Secure
 import android.provider.Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+import android.speech.RecognizerIntent
 import android.text.TextUtils
 import android.view.accessibility.AccessibilityEvent
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.getSystemService
 import dev.coletz.voidlauncher.models.support.CustomAction
@@ -67,6 +70,30 @@ class Accessible : AccessibilityService() {
         fun toggleSplitScreen(context: Context?) = run(context, GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
         fun screenOff(activity: Activity?) = screenOffCompat(activity)
         fun screenshot(context: Context?) = run(context, GLOBAL_ACTION_TAKE_SCREENSHOT)
+        fun voiceAssistant(context: Context?) {
+            context ?: return
+            try {
+                val intent = Intent(RecognizerIntent.ACTION_VOICE_SEARCH_HANDS_FREE)
+                    .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                    .putExtra(RecognizerIntent.EXTRA_PROMPT, "How can I help you?")
+
+                // Check if there's an activity that can handle this intent
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK) // Add this flag if calling from a non-Activity context
+                    context.startActivity(intent)
+                } else {
+                    // Fallback or error handling if no voice assistant is available
+                    Toast.makeText(context, "Voice assistant not available", Toast.LENGTH_SHORT).show()
+                }
+            } catch (_: ActivityNotFoundException) {
+                // This specific exception might also indicate no voice assistant
+                Toast.makeText(context, "Voice assistant not found", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                // General error handling
+                Toast.makeText(context, "Could not start voice assistant", Toast.LENGTH_SHORT).show()
+                e.printStackTrace()
+            }
+        }
 
         fun runCustomAction(customAction: CustomAction, activity: Activity) {
             when(customAction) {
@@ -80,6 +107,7 @@ class Accessible : AccessibilityService() {
                 TOGGLE_SPLIT_SCREEN -> toggleSplitScreen(activity)
                 SCREEN_OFF -> screenOff(activity)
                 SCREENSHOT -> screenshot(activity)
+                VOICE_ASSISTANT -> voiceAssistant(activity)
             }
         }
 

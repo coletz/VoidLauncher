@@ -179,11 +179,12 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
             }
             Keyboard.KEYCODE_CUSTOM_RECENT -> Accessible.pressRecent(context)
             Keyboard.KEYCODE_CUSTOM_NOTIFICATION -> Accessible.openNotification(context)
-            Keyboard.KEYCODE_CUSTOM_VOICE_RECORD -> startVoiceRecorder()
-            Keyboard.KEYCODE_SHIFT_LEFT -> Accessible.runCustomAction(prefsViewModel.getCustomAction(0), requireActivity())
-            Keyboard.KEYCODE_SHIFT_RIGHT -> Accessible.runCustomAction(prefsViewModel.getCustomAction(1), requireActivity())
-            Keyboard.KEYCODE_CUSTOM_CURRENCY -> Accessible.runCustomAction(prefsViewModel.getCustomAction(2), requireActivity())
-            Keyboard.KEYCODE_MODE_CHANGE -> Accessible.runCustomAction(prefsViewModel.getCustomAction(3), requireActivity())
+            Keyboard.KEYCODE_CUSTOM_VOICE_RECORD,
+            Keyboard.KEYCODE_SHIFT_LEFT,
+            Keyboard.KEYCODE_SHIFT_RIGHT,
+            Keyboard.KEYCODE_CUSTOM_CURRENCY,
+            Keyboard.KEYCODE_MODE_CHANGE,
+            Keyboard.KEYCODE_ALT -> Accessible.runCustomAction(prefsViewModel.getCustomActionByKey(primaryCode), requireActivity())
             else -> {
                 val tmpFilter = filter + primaryCode.toChar().toString()
                 if (primaryCode == Keyboard.KEYCODE_SPACE) {
