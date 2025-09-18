@@ -4,6 +4,7 @@ import dev.coletz.voidlauncher.models.support.PersistableEnum
 import kotlin.reflect.KClass
 
 object Preference {
+    @ConsistentCopyVisibility
     data class Info private constructor(
         val key: String,
         val name: String,
@@ -15,6 +16,12 @@ object Preference {
                 key = id,
                 name = name,
                 type = Int::class
+            )
+
+            fun bool(id: String, name: String): Info = Info(
+                key = id,
+                name = name,
+                type = Boolean::class
             )
 
             fun <T: PersistableEnum> enum(id: String, name: String, possibleValue: List<T>): Info = Info(

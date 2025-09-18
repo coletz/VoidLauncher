@@ -13,7 +13,6 @@ import dev.coletz.voidlauncher.R
 import dev.coletz.voidlauncher.models.Preference
 import dev.coletz.voidlauncher.models.support.PersistableEnum
 import dev.coletz.voidlauncher.views.InputTextDialog
-import kotlin.enums.EnumEntries
 
 class PreferenceManagerDialog(context: Context) {
 
@@ -43,13 +42,26 @@ class PreferenceManagerDialog(context: Context) {
                             it.inputType = InputType.TYPE_CLASS_NUMBER
                         }
                 }
+                Boolean::class -> {
+                    inputTextDialog
+                        .customizeInput {
+                            val adapter = ArrayAdapter(
+                                context,
+                                android.R.layout.simple_dropdown_item_1line,
+                                listOf(true, false)
+                            )
+                            it.setAdapter(adapter)
+
+                            it.setText(pref.rawValue)
+                        }
+                }
                 PersistableEnum::class -> {
                     inputTextDialog
                         .customizeInput {
                             val adapter = ArrayAdapter(
                                 context,
                                 android.R.layout.simple_dropdown_item_1line,
-                                pref.info.possibleValue as? List<String> ?: emptyList()
+                                pref.info.possibleValue as? List<*> ?: emptyList()
                             )
                             it.setAdapter(adapter)
 

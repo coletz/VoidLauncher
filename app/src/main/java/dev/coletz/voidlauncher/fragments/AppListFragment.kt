@@ -54,7 +54,9 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
     private var filter: String
         get() = appViewModel.filter.value ?: ""
         set(value) {
-            vibrator.vibrate(VibrationEffect.createOneShot(75, 75))
+            if (prefsViewModel.vibrateOnKeypress) {
+                vibrator.vibrate(VibrationEffect.createOneShot(75, 75))
+            }
             appViewModel.filter.postValue(value)
         }
 
