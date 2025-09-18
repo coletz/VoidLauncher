@@ -29,6 +29,7 @@ import dev.coletz.voidlauncher.keyboard.deviceWithPhysicalKeyboard
 import dev.coletz.voidlauncher.mvvm.AppViewModel
 import dev.coletz.voidlauncher.mvvm.PreferencesViewModel
 import dev.coletz.voidlauncher.utils.*
+import dev.coletz.voidlauncher.views.AppUiItem
 import dev.coletz.voidlauncher.views.AppsAdapter
 import dev.coletz.voidlauncher.views.multiActionDialog
 import java.util.*
@@ -92,8 +93,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
         appsList.itemAnimator = null
 
         appsAdapter.onAppClicked = { app ->
-            filter = ""
-            appViewModel.launch(app.identifier)
+            launchApp(app)
         }
 
         appsAdapter.onFolderClicked = { folder ->
@@ -151,6 +151,11 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
         filterView = findViewById(R.id.filter_view)
     }
 
+    private fun launchApp(app: AppUiItem) {
+        filter = ""
+        appViewModel.launch(app.identifier)
+    }
+
     private fun refreshUi() {
         keyboardView.updateLayoutParams<ConstraintLayout.LayoutParams> {
             bottomMargin = prefsViewModel.keyboardBottomMargin
@@ -180,6 +185,9 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
                 if(filterLength > 0) {
                     filter = filter.substring(0, filterLength - 1)
                 }
+            }
+            Keyboard.KEYCODE_DONE -> {
+                appsAdapter.getLastApp()?.let(::launchApp)
             }
             Keyboard.KEYCODE_CUSTOM_RECENT -> Accessible.pressRecent(context)
             Keyboard.KEYCODE_CUSTOM_NOTIFICATION -> Accessible.openNotification(context)

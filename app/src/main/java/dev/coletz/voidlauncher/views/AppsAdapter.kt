@@ -33,6 +33,30 @@ class AppsAdapter: ListAdapter<MainListUiItem, AppsAdapter.Holder>(Differ) {
         submitList(newApps) { onVisibleAppsLoaded() }
     }
 
+    fun getFirstApp(): AppUiItem? {
+        var counter = 0
+        while (counter < itemCount) {
+            val item = getItem(counter)
+            if (item is AppUiItem) {
+                return item
+            }
+            counter++
+        }
+        return null
+    }
+
+    fun getLastApp(): AppUiItem? {
+        var counter = itemCount - 1
+        while (counter >= 0) {
+            val item = getItem(counter)
+            if (item is AppUiItem) {
+                return item
+            }
+            counter--
+        }
+        return null
+    }
+
 
     inner class Holder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener {
 
