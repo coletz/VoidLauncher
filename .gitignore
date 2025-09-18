@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+/.idea
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -11,3 +12,7 @@
 /build
 /captures
 .externalNativeBuild
+/app/release
+/app/blackberry/release
+/app/minimalphone/release
+/app/softwarekeyboard/release
