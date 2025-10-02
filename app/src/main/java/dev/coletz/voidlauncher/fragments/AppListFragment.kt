@@ -31,7 +31,6 @@ import dev.coletz.voidlauncher.mvvm.PreferencesViewModel
 import dev.coletz.voidlauncher.utils.*
 import dev.coletz.voidlauncher.views.AppUiItem
 import dev.coletz.voidlauncher.views.AppsAdapter
-import dev.coletz.voidlauncher.views.MainListUiItem
 import dev.coletz.voidlauncher.views.multiActionDialog
 import java.util.*
 
