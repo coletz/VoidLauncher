@@ -26,6 +26,7 @@ import dev.coletz.voidlauncher.appoptions.PreferenceManagerDialog
 import dev.coletz.voidlauncher.keyboard.Keyboard
 import dev.coletz.voidlauncher.keyboard.KeyboardView
 import dev.coletz.voidlauncher.keyboard.deviceWithPhysicalKeyboard
+import dev.coletz.voidlauncher.models.support.CustomAction
 import dev.coletz.voidlauncher.mvvm.AppViewModel
 import dev.coletz.voidlauncher.mvvm.PreferencesViewModel
 import dev.coletz.voidlauncher.utils.*
@@ -63,7 +64,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
-            SpeechRecognizerManager.getOrCreate(this).toggleMic()
+            SpeechRecognizerManager.getOrCreate(this, prefsViewModel.voiceSearchLanguage).toggleMic()
         } else {
             SpeechRecognizerManager.errorMissingPermission(requireContext())
         }
@@ -168,7 +169,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
         context?.let { ctx ->
             microphoneBtn.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(ctx, R.color.mic_active_color))
         }
-        SpeechRecognizerManager.getOrCreate(this)
+        SpeechRecognizerManager.getOrCreate(this, prefsViewModel.voiceSearchLanguage)
             .setSpeechResultListener(speechResultListener)
             .toggleMic(requestPermissionLauncher)
     }
@@ -197,7 +198,12 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
             Keyboard.KEYCODE_SHIFT_RIGHT,
             Keyboard.KEYCODE_CUSTOM_CURRENCY,
             Keyboard.KEYCODE_MODE_CHANGE,
-            Keyboard.KEYCODE_ALT -> Accessible.runCustomAction(prefsViewModel.getCustomActionByKey(primaryCode), requireActivity())
+            Keyboard.KEYCODE_ALT -> {
+                when (val customAction = prefsViewModel.getCustomActionByKey(primaryCode)) {
+                    CustomAction.VOICE_SEARCH -> startVoiceRecorder()
+                    else -> Accessible.runCustomAction(customAction, requireActivity())
+                }
+            }
             else -> {
                 val tmpFilter = filter + primaryCode.toChar().toString()
                 if (primaryCode == Keyboard.KEYCODE_SPACE) {

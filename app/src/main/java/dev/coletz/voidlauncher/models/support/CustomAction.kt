@@ -11,7 +11,8 @@ enum class CustomAction(override val id: String): PersistableEnum {
     TOGGLE_SPLIT_SCREEN("toggle_split_screen"),
     SCREEN_OFF("screen_off"),
     SCREENSHOT("screenshot"),
-    VOICE_ASSISTANT("voice_assistant");
+    VOICE_ASSISTANT("voice_assistant"),
+    VOICE_SEARCH("voice_search");
 
     companion object {
         fun getById(rawValue: String?): CustomAction =

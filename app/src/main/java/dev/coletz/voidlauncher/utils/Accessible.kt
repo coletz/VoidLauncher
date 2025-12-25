@@ -108,6 +108,7 @@ class Accessible : AccessibilityService() {
                 SCREEN_OFF -> screenOff(activity)
                 SCREENSHOT -> screenshot(activity)
                 VOICE_ASSISTANT -> voiceAssistant(activity)
+                VOICE_SEARCH -> {/* Do nothing, handled outside */ }
             }
         }
 
