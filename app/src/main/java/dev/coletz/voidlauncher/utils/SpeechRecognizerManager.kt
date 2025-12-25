@@ -14,22 +14,27 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
+import dev.coletz.voidlauncher.models.support.VoiceSearchLanguage
 import java.lang.ref.WeakReference
-import java.util.*
 import kotlin.collections.ArrayList
 
 
-class SpeechRecognizerManager private constructor(private val owner: Fragment): RecognitionListener {
+class SpeechRecognizerManager private constructor(
+    private val owner: Fragment,
+    private val language: VoiceSearchLanguage?
+): RecognitionListener {
 
     companion object {
-        private var weakInstance: WeakReference<SpeechRecognizerManager> = WeakReference(null)
+        private var weakInstances: MutableMap<VoiceSearchLanguage?, WeakReference<SpeechRecognizerManager>> = mutableMapOf()
 
-        fun getOrCreate(owner: Fragment): SpeechRecognizerManager {
-            val instance = weakInstance.get()
-            if (instance == null) {
-                weakInstance = WeakReference(SpeechRecognizerManager(owner))
+        fun getOrCreate(owner: Fragment, language: VoiceSearchLanguage?): SpeechRecognizerManager {
+            val instance = weakInstances[language]?.get()
+            if (instance != null) {
+                return instance
             }
-            return requireNotNull(weakInstance.get())
+            val newInstance = SpeechRecognizerManager(owner, language)
+            weakInstances[language] = WeakReference(newInstance)
+            return newInstance
         }
 
         fun errorMissingPermission(context: Context) {
@@ -50,7 +55,11 @@ class SpeechRecognizerManager private constructor(private val owner: Fragment): 
     private val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         .putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
         .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_WEB_SEARCH)
-        .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ITALY.toString())
+        .also {
+            if (language?.id != null) {
+                it.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language.id)
+            }
+        }
 
     init {
         speechRecognizer.setRecognitionListener(this)
@@ -58,7 +67,7 @@ class SpeechRecognizerManager private constructor(private val owner: Fragment): 
 
     fun toggleMic(requestPermissionLauncher: ActivityResultLauncher<String>? = null) {
         if (isListening) {
-            killInstance()
+            killInstances()
         } else {
             startMic(requestPermissionLauncher)
         }
@@ -70,9 +79,9 @@ class SpeechRecognizerManager private constructor(private val owner: Fragment): 
         }
     }
 
-    private fun killInstance() {
+    private fun killInstances() {
         speechRecognizer.destroy()
-        weakInstance = WeakReference(null)
+        weakInstances[language] = WeakReference(null)
     }
 
     private fun checkPermission(requestPermissionLauncher: ActivityResultLauncher<String>? = null, ifPermissionAlreadyGranted: () -> Unit) {
@@ -125,7 +134,7 @@ class SpeechRecognizerManager private constructor(private val owner: Fragment): 
         val data: ArrayList<String> = bundle?.getStringArrayList(RESULTS_RECOGNITION) ?: return
         data.debugEach("SRMAN")
         if (speechResultListener?.invoke(data) == true) {
-            killInstance()
+            killInstances()
         }
     }
 
@@ -134,7 +143,7 @@ class SpeechRecognizerManager private constructor(private val owner: Fragment): 
         val data: ArrayList<String> = bundle?.getStringArrayList(RESULTS_RECOGNITION) ?: return
         data.debugEach("SRMAN")
         if (speechResultListener?.invoke(data) == true) {
-            killInstance()
+            killInstances()
         }
     }
 
