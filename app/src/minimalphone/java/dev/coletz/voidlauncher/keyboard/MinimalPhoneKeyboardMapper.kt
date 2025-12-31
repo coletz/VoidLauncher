@@ -3,7 +3,6 @@ package dev.coletz.voidlauncher.keyboard
 class MinimalPhoneKeyboardMapper: KeyboardMapper {
     override fun mapKeyCode(keyCode: Int): Int {
         return when (keyCode) {
-            in 29..54 -> keyCode + 36
             56 -> Keyboard.KEYCODE_CUSTOM_VOICE_RECORD
             57 -> Keyboard.KEYCODE_ALT
             59 -> Keyboard.KEYCODE_SHIFT_LEFT

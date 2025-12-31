@@ -5,7 +5,6 @@ class SoftwareKeyboardMapper: KeyboardMapper {
         return when (keyCode) {
             7 -> Keyboard.KEYCODE_CUSTOM_VOICE_RECORD
             11 -> Keyboard.KEYCODE_CUSTOM_CURRENCY
-            in 29..54 -> keyCode + 36
             57 -> Keyboard.KEYCODE_ALT
             59 -> Keyboard.KEYCODE_SHIFT_LEFT
             60 -> Keyboard.KEYCODE_SHIFT_RIGHT

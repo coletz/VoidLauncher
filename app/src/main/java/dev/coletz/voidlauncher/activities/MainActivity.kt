@@ -53,11 +53,33 @@ class MainActivity : BaseMainActivity() {
 
     // For physical keyboard; mapping is needed to get the keyCode equal
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        val mappedKeyCode = keyboardMapper.mapKeyCode(keyCode)
+        event ?: return false
+
+        if (event.scanCode == 0 && event.unicodeChar == 0) {
+            // this is uppercase character, shift is sent as a separate keycode so we filter it
+            return false
+        }
+
+        when {
+            !event.isPrintingKey && event.scanCode != 0 -> handleScanCode(event)
+            event.isPrintingKey && event.unicodeChar != 0 -> handleUnicode(event)
+        }
+
+        return super.onKeyDown(keyCode, event)
+    }
+
+    private fun handleScanCode(event: KeyEvent) {
+        val mappedKeyCode = keyboardMapper.mapKeyCode(event.keyCode)
         supportFragmentManager
             .fragments
             .filterIsInstance<KeyboardView.OnKeyboardActionListener>()
             .forEach { it.onKey(mappedKeyCode, intArrayOf()) }
-        return super.onKeyDown(keyCode, event)
+    }
+
+    private fun handleUnicode(event: KeyEvent) {
+        supportFragmentManager
+            .fragments
+            .filterIsInstance<KeyboardView.OnKeyboardActionListener>()
+            .forEach { it.onKey(event.unicodeChar, intArrayOf()) }
     }
 }
