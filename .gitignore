@@ -16,3 +16,7 @@
 /app/blackberry/release
 /app/minimalphone/release
 /app/softwarekeyboard/release
+app/release
+app/softwarekeyboardSpotlight/release
+app/softwarekeyboard/debug
+.idea
