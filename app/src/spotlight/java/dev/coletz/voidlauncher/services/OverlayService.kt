@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dev.coletz.voidlauncher.R
 import dev.coletz.voidlauncher.activities.SpotlightSetupActivity
 import dev.coletz.voidlauncher.mvvm.AppViewModel
+import dev.coletz.voidlauncher.mvvm.SpotlightPreferencesViewModel
 import dev.coletz.voidlauncher.utils.SpaceItemDecoration
 import dev.coletz.voidlauncher.views.AppUiItem
 import dev.coletz.voidlauncher.views.AppsAdapter
@@ -49,6 +50,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
     private val viewModelStoreOwner = ViewModelStore()
 
     private lateinit var appViewModel: AppViewModel
+    private lateinit var prefsViewModel: SpotlightPreferencesViewModel
     private val appsAdapter = AppsAdapter()
 
     private var filter: String
@@ -66,6 +68,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         lifecycleRegistry.currentState = Lifecycle.State.CREATED
         appViewModel = AppViewModel(application)
+        prefsViewModel = SpotlightPreferencesViewModel(application)
         appViewModel.updateApps()
     }
 
@@ -106,7 +109,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         val screenHeight = displayMetrics.heightPixels
 
         val params = WindowManager.LayoutParams(
-            (screenWidth * 0.85).toInt(),
+            (screenWidth * prefsViewModel.spotlightWidthPercentage / 100.0).toInt(),
             (screenHeight * 0.6).toInt(),
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
