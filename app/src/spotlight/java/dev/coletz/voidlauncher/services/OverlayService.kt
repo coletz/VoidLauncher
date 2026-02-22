@@ -37,14 +37,12 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         const val EXTRA_KEY_CODE = "extra_key_code"
         const val EXTRA_UNICODE_CHAR = "extra_unicode_char"
 
-        private var instance: OverlayService? = null
-
-        fun isShowing(): Boolean = instance?.isOverlayShowing == true
+        var isVisible = false
+            private set
     }
 
     private lateinit var windowManager: WindowManager
     private var overlayView: View? = null
-    private var isOverlayShowing = false
 
     private val lifecycleRegistry = LifecycleRegistry(this)
     private val viewModelStoreOwner = ViewModelStore()
@@ -64,7 +62,6 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         lifecycleRegistry.currentState = Lifecycle.State.CREATED
         appViewModel = AppViewModel(application)
@@ -77,7 +74,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
             ACTION_SHOW -> showOverlay()
             ACTION_HIDE -> hideOverlay()
             ACTION_TOGGLE -> {
-                if (isOverlayShowing) hideOverlay() else showOverlay()
+                if (isVisible) hideOverlay() else showOverlay()
             }
             ACTION_KEY_EVENT -> {
                 val keyCode = intent.getIntExtra(EXTRA_KEY_CODE, 0)
@@ -89,7 +86,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
     }
 
     private fun showOverlay() {
-        if (isOverlayShowing) return
+        if (isVisible) return
 
         if (!Settings.canDrawOverlays(this)) {
             Toast.makeText(this, "Overlay permission required. Open Spotlight setup.", Toast.LENGTH_LONG).show()
@@ -120,7 +117,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         }
 
         windowManager.addView(overlayView, params)
-        isOverlayShowing = true
+        isVisible = true
         lifecycleRegistry.currentState = Lifecycle.State.RESUMED
 
         // Reset filter when showing
@@ -202,13 +199,13 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
     }
 
     private fun hideOverlay() {
-        if (!isOverlayShowing) return
+        if (!isVisible) return
 
         overlayView?.let {
             windowManager.removeView(it)
         }
         overlayView = null
-        isOverlayShowing = false
+        isVisible = false
         lifecycleRegistry.currentState = Lifecycle.State.CREATED
     }
 
@@ -216,7 +213,6 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         hideOverlay()
         lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
         viewModelStoreOwner.clear()
-        instance = null
         super.onDestroy()
     }
 
@@ -225,7 +221,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
 
     // Handle key events from accessibility service
     private fun handleKeyEvent(keyCode: Int, unicodeChar: Int) {
-        if (!isOverlayShowing) return
+        if (!isVisible) return
 
         when (keyCode) {
             KeyEvent.KEYCODE_DEL -> {

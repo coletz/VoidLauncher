@@ -38,7 +38,7 @@ class KeyForwarderAccessibility : AccessibilityService() {
             }
 
             // Forward key events to overlay if it's showing
-            if (OverlayService.isShowing()) {
+            if (OverlayService.isVisible) {
                 forwardKeyToOverlay(event)
                 return true
             }
