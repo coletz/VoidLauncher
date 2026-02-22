@@ -5,26 +5,30 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import dev.coletz.voidlauncher.R
-import dev.coletz.voidlauncher.utils.KeyForwarderAccessibility
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
+import dev.coletz.voidlauncher.R
+import dev.coletz.voidlauncher.appoptions.PreferenceManagerDialog
+import dev.coletz.voidlauncher.mvvm.SpotlightPreferencesViewModel
+import dev.coletz.voidlauncher.utils.KeyForwarderAccessibility
 
 class SpotlightSetupActivity : AppCompatActivity() {
 
-    private lateinit var statusText: TextView
     private lateinit var overlayButton: Button
     private lateinit var accessibilityButton: Button
-    private lateinit var instructionsText: TextView
+    private lateinit var appSettingsButton: Button
+
+    private val prefsViewModel: SpotlightPreferencesViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spotlight_setup)
 
-        statusText = findViewById(R.id.status_text)
         overlayButton = findViewById(R.id.overlay_permission_btn)
         accessibilityButton = findViewById(R.id.accessibility_permission_btn)
-        instructionsText = findViewById(R.id.instructions_text)
+        appSettingsButton = findViewById(R.id.app_settings_btn)
 
         overlayButton.setOnClickListener {
             requestOverlayPermission()
@@ -32,6 +36,25 @@ class SpotlightSetupActivity : AppCompatActivity() {
 
         accessibilityButton.setOnClickListener {
             KeyForwarderAccessibility.requestAccessibilityEnabled(this)
+        }
+
+        appSettingsButton.setOnClickListener {
+            openAppSettings()
+        }
+    }
+
+    private fun openAppSettings() {
+        PreferenceManagerDialog(this).apply {
+            val updateData = { loadPreferences(prefsViewModel.getAllPreferences()) }
+
+            setOnPreferenceUpdatedListener {
+                prefsViewModel.updatePreference(it)
+                updateData()
+            }
+
+            updateData()
+
+            show()
         }
     }
 
@@ -41,25 +64,8 @@ class SpotlightSetupActivity : AppCompatActivity() {
     }
 
     private fun updatePermissionStatus() {
-        val hasOverlayPermission = Settings.canDrawOverlays(this)
-        val hasAccessibilityPermission = isAccessibilityEnabled()
-
-        overlayButton.isEnabled = !hasOverlayPermission
-        overlayButton.text = if (hasOverlayPermission) "Overlay Permission Granted" else "Grant Overlay Permission"
-
-        accessibilityButton.isEnabled = !hasAccessibilityPermission
-        accessibilityButton.text = if (hasAccessibilityPermission) "Accessibility Enabled" else "Enable Accessibility Service"
-
-        if (hasOverlayPermission && hasAccessibilityPermission) {
-            statusText.text = "Setup Complete!"
-            instructionsText.text = "Press Ctrl+Space anywhere to open Void Launcher Spotlight.\n\nYou can now close this app."
-        } else {
-            statusText.text = "Setup Required"
-            val missing = mutableListOf<String>()
-            if (!hasOverlayPermission) missing.add("Overlay permission")
-            if (!hasAccessibilityPermission) missing.add("Accessibility service")
-            instructionsText.text = "Please grant the following permissions:\n${missing.joinToString("\n") { "- $it" }}"
-        }
+        overlayButton.isVisible = !Settings.canDrawOverlays(this)
+        accessibilityButton.isVisible = !isAccessibilityEnabled()
     }
 
     private fun requestOverlayPermission() {

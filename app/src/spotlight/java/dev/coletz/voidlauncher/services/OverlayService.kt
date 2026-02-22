@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dev.coletz.voidlauncher.R
+import dev.coletz.voidlauncher.activities.SpotlightSetupActivity
 import dev.coletz.voidlauncher.mvvm.AppViewModel
 import dev.coletz.voidlauncher.utils.SpaceItemDecoration
 import dev.coletz.voidlauncher.views.AppUiItem
@@ -150,6 +151,14 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
 
         closeButton.setOnClickListener {
             hideOverlay()
+        }
+
+        val settingsButton: View = view.findViewById(R.id.settings_btn)
+        settingsButton.setOnClickListener {
+            hideOverlay()
+            val intent = Intent(this, SpotlightSetupActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
 
         // Handle touch outside to dismiss

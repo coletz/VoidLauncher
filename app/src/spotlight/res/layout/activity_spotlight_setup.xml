@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="32dp"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:background="@color/default_bg_color">
 
     <TextView
@@ -16,34 +16,38 @@
         android:textColor="@color/default_text_color"
         android:layout_marginBottom="16dp" />
 
-    <TextView
-        android:id="@+id/status_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Setup Required"
-        android:textSize="18sp"
-        android:textColor="@color/default_text_color"
-        android:layout_marginBottom="32dp" />
-
     <Button
         android:id="@+id/overlay_permission_btn"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:paddingHorizontal="32dp"
         android:text="Grant Overlay Permission"
-        android:layout_marginBottom="16dp" />
+        />
 
     <Button
         android:id="@+id/accessibility_permission_btn"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:paddingHorizontal="32dp"
         android:text="Enable Accessibility Service"
-        android:layout_marginBottom="32dp" />
+        />
+
+    <Button
+        android:id="@+id/app_settings_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:paddingHorizontal="32dp"
+        android:text="App Settings"
+        />
 
     <TextView
         android:id="@+id/instructions_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please grant the required permissions to use Spotlight."
+        android:text="Press Ctrl+Space anywhere to open Void Spotlight"
         android:textSize="14sp"
         android:textColor="@color/default_text_color"
         android:gravity="center"
