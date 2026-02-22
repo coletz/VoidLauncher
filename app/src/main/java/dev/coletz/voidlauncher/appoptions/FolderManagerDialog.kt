@@ -125,7 +125,7 @@ class FolderManagerDialog(context: Context) {
                 itemLabel.isChecked = app in item.apps
             }
 
-            override fun onCheckedChanged(v: CompoundButton?, isChecked: Boolean) {
+            override fun onCheckedChanged(v: CompoundButton, isChecked: Boolean) {
                 onAppChecked(item.folder, isChecked)
             }
         }

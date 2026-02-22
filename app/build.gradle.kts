@@ -1,21 +1,20 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.ksp)
 }
 
 android {
     namespace = "dev.coletz.voidlauncher"
-    compileSdk = 35
+    compileSdk = 36
 
     buildFeatures.buildConfig = true
 
     defaultConfig {
         applicationId = "dev.coletz.voidlauncher"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 3
-        versionName = "0.3"
+        targetSdk = 36
+        versionCode = 4
+        versionName = "0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -24,10 +23,6 @@ android {
                 arguments["room.schemaLocation"] = "$projectDir/schemas"
             }
         }
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     compileOptions {
@@ -87,18 +82,6 @@ android {
         }
     }
 
-    val BASE_APP_NAME = "Void Launcher"
-
-    applicationVariants.all {
-        if (buildType.name == "debug") {
-            val newLabel = when (flavorName) {
-                "blackberry" -> "$BASE_APP_NAME for BB"
-                "minimalphone" -> "$BASE_APP_NAME for Minimal"
-                else -> BASE_APP_NAME
-            }
-            resValue("string", "app_name", newLabel)
-        }
-    }
 }
 
 ksp {
