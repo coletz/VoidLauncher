@@ -19,6 +19,8 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dev.coletz.voidlauncher.R
@@ -110,10 +112,19 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
         val screenHeight = displayMetrics.heightPixels
+        val maxHeight = (screenHeight * 0.6).toInt()
+
+        // Set max height constraint on the RecyclerView
+        overlayView?.findViewById<RecyclerView>(R.id.overlay_apps_list)?.let { recyclerView ->
+            (recyclerView.layoutParams as? ConstraintLayout.LayoutParams)?.let { params ->
+                params.matchConstraintMaxHeight = maxHeight
+                recyclerView.layoutParams = params
+            }
+        }
 
         val params = WindowManager.LayoutParams(
             (screenWidth * prefsViewModel.spotlightWidthPercentage / 100.0).toInt(),
-            (screenHeight * 0.6).toInt(),
+            WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
                     WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
@@ -135,6 +146,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         val view = overlayView ?: return
 
         val appsList: RecyclerView = view.findViewById(R.id.overlay_apps_list)
+        val dividerView: View = view.findViewById(R.id.overlay_divider)
         val filterView: TextView = view.findViewById(R.id.overlay_filter_view)
         val closeButton: View = view.findViewById(R.id.overlay_close_btn)
 
@@ -195,6 +207,10 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
 
         // Observe apps and filter
         appViewModel.apps.observe(this, Observer { apps ->
+            val hasApps = apps.isNotEmpty()
+            appsList.isVisible = hasApps
+            dividerView.isVisible = hasApps
+
             appsAdapter.updateApps(apps)
         })
 
