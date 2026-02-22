@@ -201,7 +201,10 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         })
 
         appViewModel.singleApp.observe(this, Observer { app ->
-            // Don't auto-launch in overlay mode to give user control
+            app ?: return@Observer
+            if (prefsViewModel.autoLaunchOnSingleAppFound) {
+                launchApp(app)
+            }
         })
     }
 
