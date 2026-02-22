@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dev.coletz.voidlauncher.R
 import dev.coletz.voidlauncher.activities.SpotlightSetupActivity
+import dev.coletz.voidlauncher.models.support.SortingDirection
 import dev.coletz.voidlauncher.mvvm.AppViewModel
 import dev.coletz.voidlauncher.mvvm.SpotlightPreferencesViewModel
 import dev.coletz.voidlauncher.utils.SpaceItemDecoration
@@ -70,6 +71,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         appViewModel = AppViewModel(application)
         prefsViewModel = SpotlightPreferencesViewModel(application)
         appViewModel.showAllOnBlankFilter = prefsViewModel.showAllOnStart
+        appViewModel.sortingDirection = prefsViewModel.sortingDirection
         appViewModel.updateApps()
     }
 
@@ -247,8 +249,12 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
                 }
             }
             KeyEvent.KEYCODE_ENTER -> {
-                // Launch last app
-                appsAdapter.getLastApp()?.let(::launchApp)
+                // Launch first visible app based on sorting direction
+                val appToLaunch = when (prefsViewModel.sortingDirection) {
+                    SortingDirection.ASCENDING -> appsAdapter.getFirstApp()
+                    SortingDirection.DESCENDING -> appsAdapter.getLastApp()
+                }
+                appToLaunch?.let(::launchApp)
             }
             KeyEvent.KEYCODE_ESCAPE -> {
                 // Escape closes overlay or clears filter

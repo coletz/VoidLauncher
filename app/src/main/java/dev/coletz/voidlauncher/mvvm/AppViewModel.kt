@@ -7,6 +7,7 @@ import androidx.lifecycle.*
 import dev.coletz.voidlauncher.models.AppEntity
 import dev.coletz.voidlauncher.models.FolderEntity
 import dev.coletz.voidlauncher.models.TagEntity
+import dev.coletz.voidlauncher.models.support.SortingDirection
 import dev.coletz.voidlauncher.room.*
 import dev.coletz.voidlauncher.room.dao.FolderEntityDao
 import dev.coletz.voidlauncher.room.dao.TagEntityDao
@@ -35,6 +36,7 @@ class AppViewModel(application: Application): AndroidViewModel(application){
     private val expandedFolderIds: MutableLiveData<List<Long>> = MutableLiveData(listOf())
     val filter: MutableLiveData<String> = MutableLiveData()
     var showAllOnBlankFilter: Boolean = true
+    var sortingDirection: SortingDirection = SortingDirection.DESCENDING
     val apps = MediatorLiveData<List<MainListUiItem>>().apply {
         addSource(allApps) { value = it.mapFilterAndSort(filter.value, expandedFolderIds.value) }
         addSource(filter) { value = allApps.value.mapFilterAndSort(it, expandedFolderIds.value) }
@@ -139,10 +141,16 @@ class AppViewModel(application: Application): AndroidViewModel(application){
                     appsWithTag,
                     folder.folderId in expandedFolderIds
                 )
-                mutableListOf<MainListUiItem>(folderUiItem).apply { if (folderUiItem.isExpanded) { addAll(folderUiItem.apps) } }.sortedDescending()
+                mutableListOf<MainListUiItem>(folderUiItem).apply { if (folderUiItem.isExpanded) { addAll(folderUiItem.apps) } }.sortedByDirection()
             } else {
-                appsWithTag.sortedDescending()
+                appsWithTag.sortedByDirection()
             }
+        }
+
+    private fun List<MainListUiItem>.sortedByDirection(): List<MainListUiItem> =
+        when (sortingDirection) {
+            SortingDirection.ASCENDING -> sorted()
+            SortingDirection.DESCENDING -> sortedDescending()
         }
 
     fun guessApp(queryStrings: List<String>, onResult: (AppUiItem?) -> Unit) {
