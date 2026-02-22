@@ -2,13 +2,11 @@ package dev.coletz.voidlauncher.fragments
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
 import androidx.fragment.app.Fragment
-import dev.coletz.voidlauncher.BuildConfig
 import dev.coletz.voidlauncher.R
 import android.provider.Settings
 import android.widget.ImageView
@@ -26,12 +24,11 @@ import dev.coletz.voidlauncher.appoptions.AppOptionMenu
 import dev.coletz.voidlauncher.appoptions.PreferenceManagerDialog
 import dev.coletz.voidlauncher.keyboard.Keyboard
 import dev.coletz.voidlauncher.keyboard.KeyboardView
-import dev.coletz.voidlauncher.keyboard.HAS_PHYSICAL_KEYBOARD
-import dev.coletz.voidlauncher.keyboard.KeyboardUtils
 import dev.coletz.voidlauncher.keyboard.SOFTWARE_KEYBOARD_LAYOUT
+import dev.coletz.voidlauncher.keyboard.deviceHasPhysicalKeyboard
 import dev.coletz.voidlauncher.models.support.CustomAction
 import dev.coletz.voidlauncher.mvvm.AppViewModel
-import dev.coletz.voidlauncher.mvvm.PreferencesViewModel
+import dev.coletz.voidlauncher.mvvm.LauncherPreferencesViewModel
 import dev.coletz.voidlauncher.utils.*
 import dev.coletz.voidlauncher.views.AppUiItem
 import dev.coletz.voidlauncher.views.AppsAdapter
@@ -48,7 +45,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
     private lateinit var filterView: TextView
 
     private val appViewModel: AppViewModel by activityViewModels()
-    private val prefsViewModel: PreferencesViewModel by activityViewModels()
+    private val prefsViewModel: LauncherPreferencesViewModel by activityViewModels()
 
     private val vibrator by lazy { requireNotNull(requireContext().getSystemService<Vibrator>()) }
 
@@ -120,7 +117,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
 
         keyboardView.apply {
             val fragment = this@AppListFragment
-            val swKbEnabled = !KeyboardUtils.hasPhysicalKeyboard(context)
+            val swKbEnabled = !deviceHasPhysicalKeyboard(context)
             isVisible = swKbEnabled
             keyboardSeparator.isVisible = swKbEnabled
             if (swKbEnabled) {

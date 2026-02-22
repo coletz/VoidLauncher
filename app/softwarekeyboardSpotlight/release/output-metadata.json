@@ -1,0 +1,37 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "dev.coletz.voidlauncher.spotlight",
+  "variantName": "softwarekeyboardSpotlightRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 3,
+      "versionName": "0.3",
+      "outputFile": "app-softwarekeyboard-spotlight-release.apk"
+    }
+  ],
+  "elementType": "File",
+  "baselineProfiles": [
+    {
+      "minApi": 28,
+      "maxApi": 30,
+      "baselineProfiles": [
+        "baselineProfiles/1/app-softwarekeyboard-spotlight-release.dm"
+      ]
+    },
+    {
+      "minApi": 31,
+      "maxApi": 2147483647,
+      "baselineProfiles": [
+        "baselineProfiles/0/app-softwarekeyboard-spotlight-release.dm"
+      ]
+    }
+  ],
+  "minSdkVersionForDexing": 26
+}
