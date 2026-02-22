@@ -69,6 +69,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
         lifecycleRegistry.currentState = Lifecycle.State.CREATED
         appViewModel = AppViewModel(application)
         prefsViewModel = SpotlightPreferencesViewModel(application)
+        appViewModel.showAllOnBlankFilter = prefsViewModel.showAllOnStart
         appViewModel.updateApps()
     }
 

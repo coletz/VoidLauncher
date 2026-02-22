@@ -34,6 +34,7 @@ class AppViewModel(application: Application): AndroidViewModel(application){
     private val allApps = appRepo.getVisibleAppsWithTagsAndFolder()
     private val expandedFolderIds: MutableLiveData<List<Long>> = MutableLiveData(listOf())
     val filter: MutableLiveData<String> = MutableLiveData()
+    var showAllOnBlankFilter: Boolean = true
     val apps = MediatorLiveData<List<MainListUiItem>>().apply {
         addSource(allApps) { value = it.mapFilterAndSort(filter.value, expandedFolderIds.value) }
         addSource(filter) { value = allApps.value.mapFilterAndSort(it, expandedFolderIds.value) }
@@ -111,7 +112,7 @@ class AppViewModel(application: Application): AndroidViewModel(application){
         val trimmedFilter = filter?.trim() ?: ""
         val filterPredicate: (MainListUiItem) -> Boolean = { item ->
             if (trimmedFilter.isBlank()) {
-                true
+                showAllOnBlankFilter
             } else {
                 item.tags.plus(item.uiName).any { name -> name.split(" ").any { word -> word.startsWith(trimmedFilter, ignoreCase = true) } }
             }
