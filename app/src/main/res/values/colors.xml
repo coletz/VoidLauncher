@@ -10,4 +10,5 @@
     <color name="default_text_color">#FFF</color>
 
     <color name="mic_active_color">#F00</color>
+    <color name="black">#000000</color>
 </resources>
