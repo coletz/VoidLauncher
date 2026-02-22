@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Void Spotlight</string>
+    <string name="accessibility_service_description">Required for opening the app with a global shortcut</string>
+</resources>

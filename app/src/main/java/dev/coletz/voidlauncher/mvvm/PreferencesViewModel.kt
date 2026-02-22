@@ -1,16 +1,18 @@
 package dev.coletz.voidlauncher.mvvm
 
 import android.app.Application
+import android.content.Context
 import androidx.core.content.edit
 import androidx.lifecycle.*
 import androidx.preference.PreferenceManager
-import dev.coletz.voidlauncher.keyboard.deviceWithPhysicalKeyboard
+import dev.coletz.voidlauncher.keyboard.HAS_PHYSICAL_KEYBOARD
+import dev.coletz.voidlauncher.keyboard.KeyboardUtils
 import dev.coletz.voidlauncher.keyboard.provideCustomKeyManager
 import dev.coletz.voidlauncher.models.Preference
 import dev.coletz.voidlauncher.models.support.CustomAction
 import dev.coletz.voidlauncher.models.support.VoiceSearchLanguage
 
-class PreferencesViewModel(application: Application): AndroidViewModel(application){
+class PreferencesViewModel(private val application: Application): AndroidViewModel(application){
 
     companion object {
 
@@ -25,8 +27,8 @@ class PreferencesViewModel(application: Application): AndroidViewModel(applicati
             val VOICE_SEARCH_LANGUAGE = Preference.Info.enum("key.VOICE_SEARCH_LANGUAGE", "Voice search language", VoiceSearchLanguage.entries)
             val CUSTOM_ACTIONS = customKeyManager.getCustomKeys().map { Preference.Info.enum("$CUSTOM_ACTION_BASE_KEY${it.id}", it.label, CustomAction.entries) }
 
-            val ALL: Array<Preference.Info> = mutableListOf<Preference.Info>().apply {
-                if (!deviceWithPhysicalKeyboard) { add(KEYBOARD_BOTTOM_MARGIN) }
+            fun getAll(context: Context): Array<Preference.Info> = mutableListOf<Preference.Info>().apply {
+                if (!KeyboardUtils.hasPhysicalKeyboard(context)) { add(KEYBOARD_BOTTOM_MARGIN) }
                 add(VIBRATE_ON_KEYPRESS)
                 add(AUTO_LAUNCH_IF_SINGLE_APP_FOUND)
                 add(VOICE_SEARCH_LANGUAGE)
@@ -39,7 +41,7 @@ class PreferencesViewModel(application: Application): AndroidViewModel(applicati
 
     fun getAllPreferences(): List<Preference.Entity> {
         val sharedPrefs = prefs.all
-        return AllPrefsInfo.ALL.map { info ->
+        return AllPrefsInfo.getAll(application).map { info ->
             Preference.Entity(
                 info = info,
                 rawValue = sharedPrefs.entries.firstOrNull { it.key == info.key }?.value?.toString()

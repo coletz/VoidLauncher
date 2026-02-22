@@ -1,6 +1,10 @@
 package dev.coletz.voidlauncher.keyboard
 
-const val deviceWithPhysicalKeyboard = false
+import dev.coletz.voidlauncher.R
+
+const val HAS_PHYSICAL_KEYBOARD = false
+
+val SOFTWARE_KEYBOARD_LAYOUT: Int = R.xml.keyboard_layout
 
 fun provideKeyboardMapper(): KeyboardMapper = SoftwareKeyboardMapper()
 

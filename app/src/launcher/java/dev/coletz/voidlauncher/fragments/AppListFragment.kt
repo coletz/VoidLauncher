@@ -8,7 +8,8 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
 import androidx.fragment.app.Fragment
-import dev.coletz.voidlauncher.*
+import dev.coletz.voidlauncher.BuildConfig
+import dev.coletz.voidlauncher.R
 import android.provider.Settings
 import android.widget.ImageView
 import android.widget.TextView
@@ -25,7 +26,9 @@ import dev.coletz.voidlauncher.appoptions.AppOptionMenu
 import dev.coletz.voidlauncher.appoptions.PreferenceManagerDialog
 import dev.coletz.voidlauncher.keyboard.Keyboard
 import dev.coletz.voidlauncher.keyboard.KeyboardView
-import dev.coletz.voidlauncher.keyboard.deviceWithPhysicalKeyboard
+import dev.coletz.voidlauncher.keyboard.HAS_PHYSICAL_KEYBOARD
+import dev.coletz.voidlauncher.keyboard.KeyboardUtils
+import dev.coletz.voidlauncher.keyboard.SOFTWARE_KEYBOARD_LAYOUT
 import dev.coletz.voidlauncher.models.support.CustomAction
 import dev.coletz.voidlauncher.mvvm.AppViewModel
 import dev.coletz.voidlauncher.mvvm.PreferencesViewModel
@@ -117,10 +120,13 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
 
         keyboardView.apply {
             val fragment = this@AppListFragment
-            isVisible = !hasPhysicalKeyboard()
-            keyboardSeparator.isVisible = isVisible
-            keyboard = Keyboard(fragment.context, R.xml.keyboard_layout)
-            setOnKeyboardActionListener(fragment)
+            val swKbEnabled = !KeyboardUtils.hasPhysicalKeyboard(context)
+            isVisible = swKbEnabled
+            keyboardSeparator.isVisible = swKbEnabled
+            if (swKbEnabled) {
+                keyboard = Keyboard(fragment.context, SOFTWARE_KEYBOARD_LAYOUT)
+                setOnKeyboardActionListener(fragment)
+            }
         }
 
         refreshUi()
@@ -257,9 +263,5 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
 
     private var filterObserver = Observer<String?> {
         filterView.text = it ?: ""
-    }
-
-    private fun hasPhysicalKeyboard(): Boolean {
-        return deviceWithPhysicalKeyboard || resources.configuration.keyboard == Configuration.KEYBOARD_QWERTY
     }
 }

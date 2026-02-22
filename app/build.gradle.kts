@@ -61,18 +61,29 @@ android {
         }
     }
 
-    flavorDimensions += "env"
+    flavorDimensions += listOf("dev_type", "app_type")
     productFlavors {
         create("softwarekeyboard") {
-            dimension = "env"
+            dimension = "dev_type"
         }
 
         create("blackberry") {
-            dimension = "env"
+            dimension = "dev_type"
         }
 
         create("minimalphone") {
-            dimension = "env"
+            dimension = "dev_type"
+        }
+
+        create("launcher") {
+            dimension = "app_type"
+            buildConfigField("boolean", "IS_LAUNCHER", "true")
+        }
+
+        create("spotlight") {
+            dimension = "app_type"
+            applicationIdSuffix = ".spotlight"
+            buildConfigField("boolean", "IS_LAUNCHER", "false")
         }
     }
 

@@ -1,7 +1,5 @@
 <resources>
-    <string name="app_name">Void Launcher</string>
     <string name="accessibility_service_label">@string/app_name</string>
-    <string name="accessibility_service_description">In order to turn the screen off on older android versions, this needs to be enabled</string>
 
     <string name="rename_option_label">Rename</string>
     <string name="folder_manager_option_label">Folder manager</string>
