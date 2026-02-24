@@ -23,6 +23,7 @@ class PreferenceManagerDialog(context: Context) {
     private val builder: AlertDialog.Builder
 
     private var onPreferenceUpdatedListener: (Preference.Entity) -> Unit = {}
+    private var customPreferenceHandler: ((Preference.Entity, (String) -> Unit) -> Boolean)? = null
 
     init {
         context.bindViews()
@@ -30,60 +31,13 @@ class PreferenceManagerDialog(context: Context) {
         recyclerView.adapter = prefsListAdapter
 
         prefsListAdapter.onClickListener = { pref ->
-            val inputTextDialog = InputTextDialog(context)
-                .setTitle(pref.info.name)
-                .setOnConfirmClicked { onPreferenceUpdatedListener(pref.copy(rawValue = it)) }
-
-            when (pref.info.type){
-                Int::class -> {
-                    inputTextDialog
-                        .customizeInput {
-                            it.setText(pref.rawValue)
-                            it.inputType = InputType.TYPE_CLASS_NUMBER
-                        }
-                }
-                Boolean::class -> {
-                    inputTextDialog
-                        .customizeInput {
-                            val adapter = ArrayAdapter(
-                                context,
-                                android.R.layout.simple_dropdown_item_1line,
-                                listOf(true, false)
-                            )
-                            it.setAdapter(adapter)
-
-                            it.setText(pref.rawValue)
-                        }
-                }
-                PersistableEnum::class -> {
-                    inputTextDialog
-                        .customizeInput {
-                            val adapter = ArrayAdapter(
-                                context,
-                                android.R.layout.simple_dropdown_item_1line,
-                                pref.info.possibleValue as? List<*> ?: emptyList()
-                            )
-                            it.setAdapter(adapter)
-
-                            it.setText(pref.rawValue)
-                        }
-                }
-            }
-
-            inputTextDialog.show()
+            onPreferenceClicked(pref)
         }
 
         builder = AlertDialog.Builder(context).apply {
             setTitle("Preference Manager")
             setView(rootView)
             setPositiveButton(R.string.close_label, null)
-        }
-    }
-
-    private fun Context.bindViews() {
-        rootView = LayoutInflater.from(this).inflate(R.layout.preference_manager_dialog, null)
-        with(rootView) {
-            recyclerView = findViewById(R.id.recycler_view)
         }
     }
 
@@ -95,8 +49,73 @@ class PreferenceManagerDialog(context: Context) {
         this.onPreferenceUpdatedListener = onPreferenceUpdatedListener
     }
 
+    fun setCustomPreferenceHandler(handler: (Preference.Entity, (String) -> Unit) -> Boolean) = apply {
+        this.customPreferenceHandler = handler
+    }
+
     fun show() = apply {
         builder.show()
+    }
+
+    private fun Context.bindViews() {
+        rootView = LayoutInflater.from(this).inflate(R.layout.preference_manager_dialog, null)
+        with(rootView) {
+            recyclerView = findViewById(R.id.recycler_view)
+        }
+    }
+
+    private fun onPreferenceClicked(preferenceEntity: Preference.Entity) {
+        val onValueUpdated: (String) -> Unit = { onPreferenceUpdatedListener(preferenceEntity.copy(rawValue = it)) }
+
+        // Try custom handler first
+        val handled = customPreferenceHandler?.invoke(preferenceEntity, onValueUpdated) == true
+        if (handled) {
+            return
+        }
+
+        val context = rootView.context
+
+        val inputTextDialog = InputTextDialog(context)
+            .setTitle(preferenceEntity.info.name)
+            .setOnConfirmClicked(onValueUpdated)
+
+        when (preferenceEntity.info.type){
+            Int::class -> {
+                inputTextDialog
+                    .customizeInput {
+                        it.setText(preferenceEntity.rawValue)
+                        it.inputType = InputType.TYPE_CLASS_NUMBER
+                    }
+            }
+            Boolean::class -> {
+                inputTextDialog
+                    .customizeInput {
+                        val adapter = ArrayAdapter(
+                            context,
+                            android.R.layout.simple_dropdown_item_1line,
+                            listOf(true, false)
+                        )
+                        it.setAdapter(adapter)
+
+                        it.setText(preferenceEntity.rawValue)
+                    }
+            }
+            PersistableEnum::class -> {
+                inputTextDialog
+                    .customizeInput {
+                        val adapter = ArrayAdapter(
+                            context,
+                            android.R.layout.simple_dropdown_item_1line,
+                            preferenceEntity.info.possibleValue as? List<*> ?: emptyList()
+                        )
+                        it.setAdapter(adapter)
+
+                        it.setText(preferenceEntity.rawValue)
+                    }
+            }
+        }
+
+        inputTextDialog.show()
     }
 
     private class PreferenceListAdapter : ListAdapter<Preference.Entity, PreferenceListAdapter.Holder>(Differ) {

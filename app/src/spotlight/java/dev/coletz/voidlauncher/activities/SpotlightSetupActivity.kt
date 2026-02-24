@@ -4,15 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.Button
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import dev.coletz.voidlauncher.R
 import dev.coletz.voidlauncher.appoptions.PreferenceManagerDialog
+import dev.coletz.voidlauncher.models.KeyCombination
+import dev.coletz.voidlauncher.models.Preference
 import dev.coletz.voidlauncher.mvvm.SpotlightPreferencesViewModel
+import dev.coletz.voidlauncher.mvvm.SpotlightPreferencesViewModel.Companion.SpotlightPrefsInfo
 import dev.coletz.voidlauncher.utils.KeyForwarderAccessibility
+import dev.coletz.voidlauncher.views.KeyCombinationRecordDialog
 
 class SpotlightSetupActivity : AppCompatActivity() {
 
@@ -47,8 +50,30 @@ class SpotlightSetupActivity : AppCompatActivity() {
         PreferenceManagerDialog(this).apply {
             val updateData = { loadPreferences(prefsViewModel.getAllPreferences()) }
 
+            setCustomPreferenceHandler { pref, onValueUpdated ->
+                if (pref.info.type == Preference.KeyCombinationType::class) {
+                    val currentCombination = pref.rawValue
+                        ?.let(KeyCombination::deserialize) ?: KeyCombination.DEFAULT
+
+                    KeyCombinationRecordDialog(this@SpotlightSetupActivity)
+                        .setTitle(pref.info.name)
+                        .setCurrentCombination(currentCombination)
+                        .setOnConfirmClicked { combination ->
+                            onValueUpdated(combination.serialize())
+                            notifyAccessibilityServicePreferencesChanged()
+                        }
+                        .show()
+                    true
+                } else {
+                    false
+                }
+            }
+
             setOnPreferenceUpdatedListener {
                 prefsViewModel.updatePreference(it)
+                if (it.info.key == SpotlightPrefsInfo.ACTIVATION_KEY.key) {
+                    notifyAccessibilityServicePreferencesChanged()
+                }
                 updateData()
             }
 
@@ -56,6 +81,12 @@ class SpotlightSetupActivity : AppCompatActivity() {
 
             show()
         }
+    }
+
+    private fun notifyAccessibilityServicePreferencesChanged() {
+        Intent(this, KeyForwarderAccessibility::class.java).apply {
+            action = KeyForwarderAccessibility.ACTION_REFRESH_PREFERENCES
+        }.also { startService(it) }
     }
 
     override fun onResume() {

@@ -11,16 +11,27 @@ import android.provider.Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
+import androidx.preference.PreferenceManager
+import dev.coletz.voidlauncher.models.KeyCombination
+import dev.coletz.voidlauncher.mvvm.SpotlightPreferencesViewModel.Companion.SpotlightPrefsInfo
 import dev.coletz.voidlauncher.services.OverlayService
 
 
 class KeyForwarderAccessibility : AccessibilityService() {
 
     private var checkNeeded = true
+    private var activationKey: KeyCombination = KeyCombination.DEFAULT
 
     override fun onCreate() {
         super.onCreate()
         checkNeeded = requestAccessibilityEnabled(this, FLAG_ACTIVITY_NEW_TASK)
+        loadActivationKey()
+    }
+
+    private fun loadActivationKey() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        activationKey = prefs.getString(SpotlightPrefsInfo.ACTIVATION_KEY.key, null)
+            ?.let(KeyCombination::deserialize) ?: KeyCombination.DEFAULT
     }
 
     override fun onInterrupt() {
@@ -31,15 +42,15 @@ class KeyForwarderAccessibility : AccessibilityService() {
 
     override fun onKeyEvent(event: KeyEvent?): Boolean {
         if (event?.action == KeyEvent.ACTION_DOWN) {
-            // Ctrl+Space toggles overlay
-            if (event.keyCode == KeyEvent.KEYCODE_SPACE && event.isCtrlPressed) {
+            // Activation key toggles overlay
+            if (event != null && activationKey.matches(event)) {
                 toggleOverlay()
                 return true
             }
 
             // Forward key events to overlay if it's showing
             if (OverlayService.isVisible) {
-                forwardKeyToOverlay(event)
+                forwardKeyToOverlay(event!!)
                 return true
             }
         }
@@ -61,6 +72,11 @@ class KeyForwarderAccessibility : AccessibilityService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_REFRESH_PREFERENCES) {
+            loadActivationKey()
+            return START_NOT_STICKY
+        }
+
         if(checkNeeded) {
             checkNeeded = requestAccessibilityEnabled(this, FLAG_ACTIVITY_NEW_TASK)
         }
@@ -69,6 +85,7 @@ class KeyForwarderAccessibility : AccessibilityService() {
     }
 
     companion object {
+        const val ACTION_REFRESH_PREFERENCES = "dev.coletz.voidlauncher.ACTION_REFRESH_PREFERENCES"
 
         fun requestAccessibilityEnabled(context: Context, customFlags: Int? = null): Boolean {
             val expectedComponentName = ComponentName(context, KeyForwarderAccessibility::class.java)

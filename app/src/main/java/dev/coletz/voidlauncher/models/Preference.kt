@@ -30,8 +30,16 @@ object Preference {
                 type = PersistableEnum::class,
                 possibleValue = possibleValue.map { it.id }.toList()
             )
+
+            fun keyCombination(id: String, name: String): Info = Info(
+                key = id,
+                name = name,
+                type = KeyCombinationType::class
+            )
         }
     }
+
+    object KeyCombinationType
 
     data class Entity(
         val info: Info,
