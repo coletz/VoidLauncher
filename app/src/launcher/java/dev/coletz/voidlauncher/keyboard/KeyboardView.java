@@ -254,40 +254,28 @@ public class KeyboardView extends View implements View.OnClickListener {
         int n = a.getIndexCount();
         for (int i = 0; i < n; i++) {
             int attr = a.getIndex(i);
-            switch (attr) {
-                case R.styleable.KeyboardView_keyBackground:
-                    mKeyBackground = a.getDrawable(attr);
-                    break;
-                case R.styleable.KeyboardView_verticalCorrection:
-                    mVerticalCorrection = a.getDimensionPixelOffset(attr, 0);
-                    break;
-                case R.styleable.KeyboardView_keyPreviewLayout:
-                    previewLayout = a.getResourceId(attr, 0);
-                    break;
-                case R.styleable.KeyboardView_keyPreviewOffset:
-                    mPreviewOffset = a.getDimensionPixelOffset(attr, 0);
-                    break;
-                case R.styleable.KeyboardView_keyPreviewHeight:
-                    mPreviewHeight = a.getDimensionPixelSize(attr, 80);
-                    break;
-                case R.styleable.KeyboardView_keyTextSize:
-                    mKeyTextSize = a.getDimensionPixelSize(attr, 18);
-                    break;
-                case R.styleable.KeyboardView_keyTextColor:
-                    mKeyTextColor = a.getColor(attr, 0xFF000000);
-                    break;
-                case R.styleable.KeyboardView_labelTextSize:
-                    mLabelTextSize = a.getDimensionPixelSize(attr, 14);
-                    break;
-                case R.styleable.KeyboardView_popupLayout:
-                    mPopupLayout = a.getResourceId(attr, 0);
-                    break;
-                case R.styleable.KeyboardView_shadowColor:
-                    mShadowColor = a.getColor(attr, 0);
-                    break;
-                case R.styleable.KeyboardView_shadowRadius:
-                    mShadowRadius = a.getFloat(attr, 0f);
-                    break;
+            if (attr == R.styleable.KeyboardView_keyBackground) {
+                mKeyBackground = a.getDrawable(attr);
+            } else if (attr == R.styleable.KeyboardView_verticalCorrection) {
+                mVerticalCorrection = a.getDimensionPixelOffset(attr, 0);
+            } else if (attr == R.styleable.KeyboardView_keyPreviewLayout) {
+                previewLayout = a.getResourceId(attr, 0);
+            } else if (attr == R.styleable.KeyboardView_keyPreviewOffset) {
+                mPreviewOffset = a.getDimensionPixelOffset(attr, 0);
+            } else if (attr == R.styleable.KeyboardView_keyPreviewHeight) {
+                mPreviewHeight = a.getDimensionPixelSize(attr, 80);
+            } else if (attr == R.styleable.KeyboardView_keyTextSize) {
+                mKeyTextSize = a.getDimensionPixelSize(attr, 18);
+            } else if (attr == R.styleable.KeyboardView_keyTextColor) {
+                mKeyTextColor = a.getColor(attr, 0xFF000000);
+            } else if (attr == R.styleable.KeyboardView_labelTextSize) {
+                mLabelTextSize = a.getDimensionPixelSize(attr, 14);
+            } else if (attr == R.styleable.KeyboardView_popupLayout) {
+                mPopupLayout = a.getResourceId(attr, 0);
+            } else if (attr == R.styleable.KeyboardView_shadowColor) {
+                mShadowColor = a.getColor(attr, 0);
+            } else if (attr == R.styleable.KeyboardView_shadowRadius) {
+                mShadowRadius = a.getFloat(attr, 0f);
             }
         }
         mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
