@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import dev.coletz.voidlauncher.mvvm.AppRepository
 import dev.coletz.voidlauncher.mvvm.PackageManagerDao
 import dev.coletz.voidlauncher.room.VoidDatabase
@@ -46,11 +47,16 @@ class AppListChangeReceiver : BroadcastReceiver() {
         }
 
         val shortcutsFilter = IntentFilter().apply {
-            "com.android.launcher.action.INSTALL_SHORTCUT"
-            "com.android.launcher.action.UNINSTALL_SHORTCUT"
+            addAction("com.android.launcher.action.INSTALL_SHORTCUT")
+            addAction("com.android.launcher.action.UNINSTALL_SHORTCUT")
         }
 
         context.registerReceiver(this, packagesFilter)
-        context.registerReceiver(this, shortcutsFilter)
+        ContextCompat.registerReceiver(
+            context,
+            this,
+            shortcutsFilter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 }
