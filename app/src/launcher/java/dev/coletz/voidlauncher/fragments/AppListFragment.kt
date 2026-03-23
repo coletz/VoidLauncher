@@ -168,6 +168,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
     }
 
     private fun startVoiceRecorder() {
+        if (!isAdded) return
         vibrator.vibrate(VibrationEffect.createOneShot(75, 75))
         context?.let { ctx ->
             microphoneBtn.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(ctx, R.color.mic_active_color))
