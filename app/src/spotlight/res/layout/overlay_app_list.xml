@@ -6,17 +6,28 @@
     android:layout_height="match_parent"
     >
 
+    <ImageView
+        android:id="@+id/settings_btn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/overlay_background_24"
+        android:padding="8dp"
+        android:src="@drawable/ic_settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:tint="@color/overlay_icon_tint" />
+
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/settings_btn"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/overlay_background"
-        android:padding="16dp"
         android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_btn">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -28,8 +39,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:padding="4dp"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
-                app:tint="@color/default_text_color"
+                android:src="@drawable/ic_close"
+                android:tint="@color/overlay_icon_tint"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,16 +49,16 @@
                 android:id="@+id/overlay_filter_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:paddingVertical="8dp"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/default_text_color"
                 android:gravity="center"
                 android:hint="Type to search..."
-                android:textColorHint="#888888"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:paddingVertical="8dp"
+                android:textColor="@color/overlay_text_color"
+                android:textColorHint="@color/overlay_hint_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@id/overlay_close_btn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="CHROME" />
 
             <!-- Divider -->
@@ -56,40 +67,28 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="8dp"
-                android:background="#444444"
-                app:layout_constraintTop_toBottomOf="@id/overlay_filter_view"
+                android:background="@color/overlay_divider_color"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/overlay_filter_view" />
 
             <!-- Apps list -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/overlay_apps_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constrainedHeight="true"
                 android:layout_marginTop="8dp"
                 android:clipToPadding="false"
                 android:paddingBottom="16dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:stackFromEnd="true"
-                app:layout_constraintTop_toBottomOf="@id/overlay_divider"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constrainedHeight="true"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/overlay_divider"
+                app:stackFromEnd="true"
                 tools:listitem="@layout/app_list_item" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
-
-    <ImageView
-        android:id="@+id/settings_btn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_settings"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="2dp"
-        android:padding="8dp"
-        android:background="@drawable/overlay_background_24"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

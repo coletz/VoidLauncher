@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="default_bg_color">#FFFFFF</color>
+    <color name="default_text_color">#000000</color>
+
+    <color name="overlay_bg_color">#E6FFFFFF</color>
+    <color name="overlay_stroke_color">#CCCCCC</color>
+    <color name="overlay_divider_color">#CCCCCC</color>
+    <color name="overlay_hint_color">#888888</color>
+    <color name="overlay_text_color">#000000</color>
+    <color name="overlay_icon_tint">#000000</color>
+</resources>

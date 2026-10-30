@@ -20,7 +20,7 @@ import kotlin.collections.ArrayList
 
 
 class SpeechRecognizerManager private constructor(
-    private val owner: Fragment,
+    private var owner: Fragment,
     private val language: VoiceSearchLanguage?
 ): RecognitionListener {
 
@@ -30,6 +30,7 @@ class SpeechRecognizerManager private constructor(
         fun getOrCreate(owner: Fragment, language: VoiceSearchLanguage?): SpeechRecognizerManager {
             val instance = weakInstances[language]?.get()
             if (instance != null) {
+                instance.owner = owner
                 return instance
             }
             val newInstance = SpeechRecognizerManager(owner, language)

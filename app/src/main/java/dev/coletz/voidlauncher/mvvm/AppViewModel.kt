@@ -64,14 +64,12 @@ class AppViewModel(application: Application): AndroidViewModel(application){
     fun hide(app: AppEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             appRepo.hide(app)
-            appRepo.updateApps()
         }
     }
 
     fun setFavorite(app: AppEntity, isFavorite: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             appRepo.setFavorite(app, isFavorite)
-            appRepo.updateApps()
         }
     }
 
@@ -81,14 +79,12 @@ class AppViewModel(application: Application): AndroidViewModel(application){
     fun insertTag(tag: TagEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             tagRepo.insertTag(tag)
-            appRepo.updateApps()
         }
     }
 
     fun deleteTag(tag: TagEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             tagRepo.deleteTag(tag)
-            appRepo.updateApps()
         }
     }
 
@@ -98,14 +94,12 @@ class AppViewModel(application: Application): AndroidViewModel(application){
     fun addAppInFolder(app: AppEntity, folder: FolderEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             folderRepo.addAppInFolder(app, folder)
-            appRepo.updateApps()
         }
     }
 
     fun removeAppFromFolder(app: AppEntity, folder: FolderEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             folderRepo.removeAppFromFolder(app, folder)
-            appRepo.updateApps()
         }
     }
 

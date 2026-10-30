@@ -17,7 +17,10 @@ open class BaseMainActivity : AppCompatActivity(), AppOptionMenu.Provider {
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
+    }
 
+    override fun onResume() {
+        super.onResume()
         appViewModel.updateApps()
     }
 }
