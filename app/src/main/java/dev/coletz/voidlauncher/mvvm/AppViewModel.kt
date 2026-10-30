@@ -46,7 +46,7 @@ class AppViewModel(application: Application): AndroidViewModel(application){
         it
             ?.takeIf { it.size == 1 }
             ?.filterIsInstance<AppUiItem>()
-            ?.first()
+            ?.firstOrNull()
     }
 
     fun updateApps() {
@@ -111,12 +111,14 @@ class AppViewModel(application: Application): AndroidViewModel(application){
 
     private fun List<AppWithTagAndFolder>?.mapFilterAndSort(filter: String?, expandedFolderIds: List<Long>? = null): List<MainListUiItem> {
         this ?: return emptyList()
-        val trimmedFilter = filter?.trim() ?: ""
+        val filterWords = filter?.split(" ")?.filter { it.isNotBlank() } ?: emptyList()
         val filterPredicate: (MainListUiItem) -> Boolean = { item ->
-            if (trimmedFilter.isBlank()) {
+            if (filterWords.isEmpty()) {
                 showAllOnBlankFilter
             } else {
-                item.tags.plus(item.uiName).any { name -> name.split(" ").any { word -> word.startsWith(trimmedFilter, ignoreCase = true) } }
+                // every word of the filter must be the prefix of at least one word of the name or tags
+                val itemWords = item.tags.plus(item.uiName).flatMap { name -> name.split(" ") }
+                filterWords.all { filterWord -> itemWords.any { word -> word.startsWith(filterWord, ignoreCase = true) } }
             }
         }
 

@@ -59,7 +59,7 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
     private var filter: String
         get() = appViewModel.filter.value ?: ""
         set(value) {
-            appViewModel.filter.postValue(value)
+            appViewModel.filter.value = value
         }
 
     override val lifecycle: Lifecycle get() = lifecycleRegistry
@@ -286,8 +286,9 @@ class OverlayService : LifecycleService(), LifecycleOwner, ViewModelStoreOwner {
                 // Handle printable characters
                 if (unicodeChar > 0) {
                     val char = unicodeChar.toChar()
-                    if (char.isLetterOrDigit() || char.isWhitespace()) {
-                        filter = (filter + char.toString()).trim()
+                    if (char.isLetterOrDigit() || char == ' ') {
+                        // keep inner/trailing spaces for multi-word search, but don't start with one
+                        filter = (filter + char.toString()).trimStart()
                     }
                 }
             }

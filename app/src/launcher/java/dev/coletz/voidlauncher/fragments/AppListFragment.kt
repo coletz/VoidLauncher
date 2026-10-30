@@ -59,7 +59,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
             if (prefsViewModel.vibrateOnKeypress) {
                 vibrator.vibrate(VibrationEffect.createOneShot(75, 75))
             }
-            appViewModel.filter.postValue(value)
+            appViewModel.filter.value = value
         }
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
@@ -76,7 +76,8 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
         }
         appViewModel.guessApp(queryStrings) { app ->
             if (app == null) {
-                filter = queryStrings.joinToString(" ").uppercase().trim()
+                // queryStrings are alternative transcriptions, ordered by confidence: show the best one
+                filter = queryStrings.firstOrNull { it.isNotBlank() }?.uppercase()?.trim() ?: ""
             } else {
                 appViewModel.launch(app.identifier)
             }
@@ -211,7 +212,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
                 val tmpFilter = filter + primaryCode.toChar().toString()
                 if (primaryCode == Keyboard.KEYCODE_SPACE) {
                     val now = Date().time
-                    if (tmpFilter.endsWith(" ") && now < spacePressedAt + 500) {
+                    if (filter.endsWith(" ") && now < spacePressedAt + 500) {
                         spacePressedAt = 0
                         filter = ""
                         Accessible.screenOff(activity)
