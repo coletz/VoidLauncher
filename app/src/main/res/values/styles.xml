@@ -1,6 +1,10 @@
 <resources>
 
-    <style name="CommonAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <!-- Launcher text colors are always light (drawn over the wallpaper), so the base theme is
+         always dark. Spotlight overrides this with a DayNight parent because it has day/night colors. -->
+    <style name="BaseAppTheme" parent="Theme.AppCompat.NoActionBar" />
+
+    <style name="CommonAppTheme" parent="BaseAppTheme">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
