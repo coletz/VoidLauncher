@@ -1,0 +1,33 @@
+<resources>
+
+    <string name="rename_option_label">Rename</string>
+    <string name="folder_manager_option_label">Folder manager</string>
+    <string name="mark_as_favorite_option_label">Add to favorite</string>
+    <string name="unmark_as_favorite_option_label">Remove from favorite</string>
+    <string name="tag_manager_option_label">Tag Manager</string>
+    <string name="uninstall_option_label">Uninstall</string>
+    <string name="hide_option_label">Hide</string>
+    <string name="reload_apps_label">Reload apps</string>
+    <string name="power_menu_label">Power menu</string>
+    <string name="open_app_settings_option_label">Void Launcher Settings</string>
+    <string name="close_label">Close</string>
+
+
+    <!-- KeyboardView - accessibility support -->
+    <!-- Description of the Alt button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_alt">Alt</string>
+    <!-- Description of the Cancel button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_cancel">Cancel</string>
+    <!-- Description of the Delete button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_delete">Delete</string>
+    <!-- Description of the Done button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_done">Done</string>
+    <!-- Description of the Mode change button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_mode_change">Mode change</string>
+    <!-- Description of the Shift button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_shift">Shift</string>
+    <!-- Description of the Enter button in a KeyboardView. [CHAR LIMIT=NONE] -->
+    <string name="keyboardview_keycode_enter">Enter</string>
+    <string name="new_tag_button">New</string>
+    <string name="android_settings">Android Settings</string>
+</resources>
