@@ -20,4 +20,5 @@ app/release
 app/softwarekeyboardSpotlight/release
 app/softwarekeyboard/debug
 .idea
-**/release/**
+app/**/release/**
+app/build/**
