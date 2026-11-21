@@ -12,13 +12,9 @@
 /build
 /captures
 .externalNativeBuild
-/app/release
-/app/blackberry/release
-/app/minimalphone/release
-/app/softwarekeyboard/release
-app/release
-app/softwarekeyboardSpotlight/release
-app/softwarekeyboard/debug
 .idea
-app/**/release/**
+launcher/**/release/**
+spotlight/**/release/**
+launcher/**/debug/**
+spotlight/**/debug/**
 app/build/**
