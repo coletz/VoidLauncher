@@ -17,7 +17,9 @@
 
         <item name="android:windowAnimationStyle">@null</item>
 
-        <item name="android:windowLightStatusBar">true</item>
+        <!-- Dark status bar icons only on light backgrounds. Launcher always draws over the wallpaper
+             with light text, so it is false here; spotlight overrides it per day/night. -->
+        <item name="android:windowLightStatusBar">@bool/light_status_bar</item>
     </style>
 
     <style name="AppTheme" parent="CommonAppTheme" />
