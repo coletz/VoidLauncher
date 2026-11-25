@@ -6,7 +6,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import dev.coletz.voidlauncher.R
+import dev.coletz.voidlauncher.core.R
 import dev.coletz.voidlauncher.models.KeyCombination
 
 class KeyCombinationRecordDialog(context: Context) {
@@ -15,18 +15,15 @@ class KeyCombinationRecordDialog(context: Context) {
     private val keyCombinationText: TextView = rootView.findViewById(R.id.key_combination_text)
     private val builder: AlertDialog.Builder
 
-    private var currentCombination: KeyCombination = KeyCombination.DEFAULT
+    private var currentCombination: KeyCombination? = null
     private var onConfirm: (KeyCombination) -> Unit = {}
 
     init {
         builder = AlertDialog.Builder(context).apply {
             setView(rootView)
             setNegativeButton(android.R.string.cancel, null)
-            setNeutralButton("Reset to Default") { _, _ ->
-                onConfirm(KeyCombination.DEFAULT)
-            }
             setPositiveButton(android.R.string.ok) { _, _ ->
-                onConfirm(currentCombination)
+                currentCombination?.let(onConfirm)
             }
         }
     }
@@ -35,9 +32,17 @@ class KeyCombinationRecordDialog(context: Context) {
         builder.setTitle(title)
     }
 
-    fun setCurrentCombination(combination: KeyCombination) = apply {
+    fun setCurrentCombination(combination: KeyCombination?) = apply {
         currentCombination = combination
         updateDisplay()
+    }
+
+    /** Adds a "Reset to default" button that confirms [combination]. No button if null. */
+    fun setDefaultCombination(combination: KeyCombination?) = apply {
+        combination ?: return@apply
+        builder.setNeutralButton(R.string.preference_reset_to_default) { _, _ ->
+            onConfirm(combination)
+        }
     }
 
     fun setOnConfirmClicked(onConfirm: (KeyCombination) -> Unit) = apply {
@@ -62,7 +67,8 @@ class KeyCombinationRecordDialog(context: Context) {
     }
 
     private fun updateDisplay() {
-        keyCombinationText.text = currentCombination.toDisplayString()
+        keyCombinationText.text = currentCombination?.toDisplayString()
+            ?: keyCombinationText.context.getString(R.string.preference_key_combination_prompt)
     }
 
     private fun isModifierOnly(keyCode: Int): Boolean {

@@ -10,12 +10,9 @@ import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import dev.coletz.voidlauncher.R
 import dev.coletz.voidlauncher.appoptions.PreferenceManagerDialog
-import dev.coletz.voidlauncher.models.KeyCombination
-import dev.coletz.voidlauncher.models.Preference
 import dev.coletz.voidlauncher.mvvm.SpotlightPreferencesViewModel
 import dev.coletz.voidlauncher.mvvm.SpotlightPreferencesViewModel.Companion.SpotlightPrefsInfo
 import dev.coletz.voidlauncher.utils.KeyForwarderAccessibility
-import dev.coletz.voidlauncher.views.KeyCombinationRecordDialog
 
 class SpotlightSetupActivity : AppCompatActivity() {
 
@@ -49,25 +46,6 @@ class SpotlightSetupActivity : AppCompatActivity() {
     private fun openAppSettings() {
         PreferenceManagerDialog(this).apply {
             val updateData = { loadPreferences(prefsViewModel.getAllPreferences()) }
-
-            setCustomPreferenceHandler { pref, onValueUpdated ->
-                if (pref.info.type == Preference.KeyCombinationType::class) {
-                    val currentCombination = pref.rawValue
-                        ?.let(KeyCombination::deserialize) ?: KeyCombination.DEFAULT
-
-                    KeyCombinationRecordDialog(this@SpotlightSetupActivity)
-                        .setTitle(pref.info.name)
-                        .setCurrentCombination(currentCombination)
-                        .setOnConfirmClicked { combination ->
-                            onValueUpdated(combination.serialize())
-                            notifyAccessibilityServicePreferencesChanged()
-                        }
-                        .show()
-                    true
-                } else {
-                    false
-                }
-            }
 
             setOnPreferenceUpdatedListener {
                 prefsViewModel.updatePreference(it)

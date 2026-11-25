@@ -9,40 +9,59 @@ object Preference {
         val key: String,
         val name: String,
         val type: KClass<*>,
-        val possibleValue: Any? = null
+        val possibleValue: Any? = null,
+        /** Raw value used when nothing has been stored yet. */
+        val defaultValue: String? = null
     ) {
         companion object {
-            fun int(id: String, name: String): Info = Info(
+            fun int(id: String, name: String, defaultValue: Int, range: IntRange? = null): Info = Info(
                 key = id,
                 name = name,
-                type = Int::class
+                type = Int::class,
+                possibleValue = range,
+                defaultValue = defaultValue.toString()
             )
 
-            fun bool(id: String, name: String): Info = Info(
+            fun bool(id: String, name: String, defaultValue: Boolean): Info = Info(
                 key = id,
                 name = name,
-                type = Boolean::class
+                type = Boolean::class,
+                defaultValue = defaultValue.toString()
             )
 
-            fun <T: PersistableEnum> enum(id: String, name: String, possibleValue: List<T>): Info = Info(
+            fun <T: PersistableEnum> enum(id: String, name: String, possibleValue: List<T>, defaultValue: T? = null): Info = Info(
                 key = id,
                 name = name,
                 type = PersistableEnum::class,
-                possibleValue = possibleValue.map { it.id }.toList()
+                possibleValue = possibleValue.map { EnumOption(id = it.id, label = it.label) },
+                defaultValue = defaultValue?.id
             )
 
-            fun keyCombination(id: String, name: String): Info = Info(
+            fun keyCombination(id: String, name: String, defaultValue: KeyCombination): Info = Info(
                 key = id,
                 name = name,
-                type = KeyCombinationType::class
+                type = KeyCombination::class,
+                defaultValue = defaultValue.serialize()
             )
         }
+
+        /** The allowed values of an int preference, or null if it is unbounded or not an int. */
+        val intRange: IntRange?
+            get() = possibleValue as? IntRange
+
+        /** The choices of an enum preference, empty for any other type. */
+        val enumOptions: List<EnumOption>
+            get() = (possibleValue as? List<*>)?.filterIsInstance<EnumOption>().orEmpty()
     }
 
-    object KeyCombinationType
+    data class EnumOption(val id: String, val label: String)
 
     data class Entity(
         val info: Info,
         val rawValue: String?
-    )
+    ) {
+        /** The stored value, or the definition's default if nothing is stored. */
+        val effectiveValue: String?
+            get() = rawValue ?: info.defaultValue
+    }
 }

@@ -11,10 +11,10 @@ class SpotlightPreferencesViewModel(application: Application) : PreferencesViewM
     companion object {
 
         object SpotlightPrefsInfo {
-            val SHOW_ALL_ON_START = Preference.Info.bool("key.SHOW_ALL_ON_START", "Show all apps on start")
-            val SORTING_DIRECTION = Preference.Info.enum("key.SORTING_DIRECTION", "Sorting direction", SortingDirection.entries)
-            val SPOTLIGHT_WIDTH = Preference.Info.int("key.SPOTLIGHT_WIDTH", "Spotlight width (%)")
-            val ACTIVATION_KEY = Preference.Info.keyCombination("key.ACTIVATION_KEY", "Activation key")
+            val SHOW_ALL_ON_START = Preference.Info.bool("key.SHOW_ALL_ON_START", "Show all apps on start", defaultValue = false)
+            val SORTING_DIRECTION = Preference.Info.enum("key.SORTING_DIRECTION", "Sorting direction", SortingDirection.entries, defaultValue = SortingDirection.ASCENDING)
+            val SPOTLIGHT_WIDTH = Preference.Info.int("key.SPOTLIGHT_WIDTH", "Spotlight width (%)", defaultValue = 85, range = 10..100)
+            val ACTIVATION_KEY = Preference.Info.keyCombination("key.ACTIVATION_KEY", "Activation key", defaultValue = KeyCombination.DEFAULT)
 
             fun getAll(): Array<Preference.Info> = arrayOf(
                 SHOW_ALL_ON_START,
@@ -32,13 +32,13 @@ class SpotlightPreferencesViewModel(application: Application) : PreferencesViewM
     }
 
     val showAllOnStart: Boolean
-        get() = prefs.getString(SpotlightPrefsInfo.SHOW_ALL_ON_START.key, "")?.toBooleanStrictOrNull() ?: false
+        get() = readBoolean(SpotlightPrefsInfo.SHOW_ALL_ON_START)
 
     val sortingDirection: SortingDirection
-        get() = prefs.getString(SpotlightPrefsInfo.SORTING_DIRECTION.key, null)?.let(SortingDirection::getById) ?: SortingDirection.ASCENDING
+        get() = readEnum(SpotlightPrefsInfo.SORTING_DIRECTION, SortingDirection.entries) ?: SortingDirection.ASCENDING
 
     val spotlightWidthPercentage: Int
-        get() = prefs.getString(SpotlightPrefsInfo.SPOTLIGHT_WIDTH.key, "")?.toIntOrNull()?.coerceIn(10, 100) ?: 85
+        get() = readInt(SpotlightPrefsInfo.SPOTLIGHT_WIDTH)
 
     val activationKey: KeyCombination
         get() = prefs.getString(SpotlightPrefsInfo.ACTIVATION_KEY.key, null)

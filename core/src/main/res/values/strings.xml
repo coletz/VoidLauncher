@@ -11,6 +11,10 @@
     <string name="power_menu_label">Power menu</string>
     <string name="open_app_settings_option_label">Void Launcher Settings</string>
     <string name="close_label">Close</string>
+    <string name="preference_not_set">Not set</string>
+    <string name="preference_int_range">From %1$d to %2$d</string>
+    <string name="preference_reset_to_default">Reset to default</string>
+    <string name="preference_key_combination_prompt">Press a key combination</string>
 
 
     <!-- KeyboardView - accessibility support -->
