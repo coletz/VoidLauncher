@@ -37,6 +37,13 @@ class AppViewModel(application: Application): AndroidViewModel(application){
     val filter: MutableLiveData<String> = MutableLiveData()
     var showAllOnBlankFilter: Boolean = true
     var sortingDirection: SortingDirection = SortingDirection.DESCENDING
+    /** When true and the filter is blank, only favorite apps are shown (flat, ignoring folders). Must be set on the main thread. */
+    var distractionFreeMode: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            apps.value = allApps.value.mapFilterAndSort(filter.value, expandedFolderIds.value)
+        }
     val apps = MediatorLiveData<List<MainListUiItem>>().apply {
         addSource(allApps) { value = it.mapFilterAndSort(filter.value, expandedFolderIds.value) }
         addSource(filter) { value = allApps.value.mapFilterAndSort(it, expandedFolderIds.value) }
@@ -44,6 +51,8 @@ class AppViewModel(application: Application): AndroidViewModel(application){
     }
     val singleApp: LiveData<AppUiItem?> = apps.map {
         it
+            // a single item on a blank filter (e.g. one favorite in distraction free mode) is not a search result
+            ?.takeIf { !filter.value.isNullOrBlank() }
             ?.takeIf { it.size == 1 }
             ?.filterIsInstance<AppUiItem>()
             ?.firstOrNull()
@@ -106,6 +115,10 @@ class AppViewModel(application: Application): AndroidViewModel(application){
     private fun List<AppWithTagAndFolder>?.mapFilterAndSort(filter: String?, expandedFolderIds: List<Long>? = null): List<MainListUiItem> {
         this ?: return emptyList()
         val filterWords = filter?.split(" ")?.filter { it.isNotBlank() } ?: emptyList()
+        if (filterWords.isEmpty() && distractionFreeMode) {
+            // show favorites even if they are inside a folder, without the folders themselves
+            return this.filter { it.app.isFavorite }.toAppUiItems().sortedByDirection()
+        }
         val filterPredicate: (MainListUiItem) -> Boolean = { item ->
             if (filterWords.isEmpty()) {
                 showAllOnBlankFilter
@@ -121,15 +134,7 @@ class AppViewModel(application: Application): AndroidViewModel(application){
 
     private fun List<AppWithTagAndFolder>.toUiItem(expandedFolderIds: List<Long>): List<MainListUiItem> =
         groupBy { it.folder }.flatMap { (folder, apps) ->
-            val appsWithTag = apps.groupBy { it.app }.map { (app, apps) ->
-                AppUiItem(
-                    uiIdentifier = app.packageName,
-                    uiName = app.uiName,
-                    isFavorite = app.isFavorite,
-                    isHidden = app.isHidden,
-                    tags = apps.mapNotNull { it.tagName }
-                )
-            }
+            val appsWithTag = apps.toAppUiItems()
             if (folder != null) {
                 val folderUiItem = FolderUiItem(
                     folderId = folder.folderId,
@@ -141,6 +146,17 @@ class AppViewModel(application: Application): AndroidViewModel(application){
             } else {
                 appsWithTag.sortedByDirection()
             }
+        }
+
+    private fun List<AppWithTagAndFolder>.toAppUiItems(): List<AppUiItem> =
+        groupBy { it.app }.map { (app, rows) ->
+            AppUiItem(
+                uiIdentifier = app.packageName,
+                uiName = app.uiName,
+                isFavorite = app.isFavorite,
+                isHidden = app.isHidden,
+                tags = rows.mapNotNull { it.tagName }.distinct()
+            )
         }
 
     private fun List<MainListUiItem>.sortedByDirection(): List<MainListUiItem> =
