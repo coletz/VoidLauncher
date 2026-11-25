@@ -9,7 +9,9 @@ object Preference {
         val key: String,
         val name: String,
         val type: KClass<*>,
-        val possibleValue: Any? = null
+        val possibleValue: Any? = null,
+        /** Raw value used when nothing has been stored yet. */
+        val defaultValue: String? = null
     ) {
         companion object {
             fun int(id: String, name: String): Info = Info(
@@ -18,10 +20,11 @@ object Preference {
                 type = Int::class
             )
 
-            fun bool(id: String, name: String): Info = Info(
+            fun bool(id: String, name: String, defaultValue: Boolean): Info = Info(
                 key = id,
                 name = name,
-                type = Boolean::class
+                type = Boolean::class,
+                defaultValue = defaultValue.toString()
             )
 
             fun <T: PersistableEnum> enum(id: String, name: String, possibleValue: List<T>): Info = Info(
@@ -44,5 +47,9 @@ object Preference {
     data class Entity(
         val info: Info,
         val rawValue: String?
-    )
+    ) {
+        /** The stored value, or the definition's default if nothing is stored. */
+        val effectiveValue: String?
+            get() = rawValue ?: info.defaultValue
+    }
 }

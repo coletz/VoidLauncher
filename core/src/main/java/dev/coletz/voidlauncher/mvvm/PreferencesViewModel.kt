@@ -12,8 +12,8 @@ open class PreferencesViewModel(application: Application): AndroidViewModel(appl
     companion object {
 
         object AllPrefsInfo {
-            val VIBRATE_ON_KEYPRESS = Preference.Info.bool("key.VIBRATE_KEYPRESS", "Vibrate on keypress")
-            val AUTO_LAUNCH_IF_SINGLE_APP_FOUND = Preference.Info.bool("key.AUTO_LAUNCH_IF_SINGLE_APP", "Auto-open if 1 app found")
+            val VIBRATE_ON_KEYPRESS = Preference.Info.bool("key.VIBRATE_KEYPRESS", "Vibrate on keypress", defaultValue = true)
+            val AUTO_LAUNCH_IF_SINGLE_APP_FOUND = Preference.Info.bool("key.AUTO_LAUNCH_IF_SINGLE_APP", "Auto-open if 1 app found", defaultValue = true)
             val VOICE_SEARCH_LANGUAGE = Preference.Info.enum("key.VOICE_SEARCH_LANGUAGE", "Voice search language", VoiceSearchLanguage.entries)
 
             fun getAll(): Array<Preference.Info> = mutableListOf<Preference.Info>().apply {
@@ -51,11 +51,14 @@ open class PreferencesViewModel(application: Application): AndroidViewModel(appl
         }
     }
 
+    protected fun readBoolean(info: Preference.Info): Boolean =
+        prefs.getString(info.key, null)?.toBooleanStrictOrNull() ?: info.defaultValue.toBoolean()
+
     val vibrateOnKeypress: Boolean
-        get() = prefs.getString(AllPrefsInfo.VIBRATE_ON_KEYPRESS.key,"")?.toBooleanStrictOrNull() ?: true
+        get() = readBoolean(AllPrefsInfo.VIBRATE_ON_KEYPRESS)
 
     val autoLaunchOnSingleAppFound: Boolean
-        get() = prefs.getString(AllPrefsInfo.AUTO_LAUNCH_IF_SINGLE_APP_FOUND.key,"")?.toBooleanStrictOrNull() ?: true
+        get() = readBoolean(AllPrefsInfo.AUTO_LAUNCH_IF_SINGLE_APP_FOUND)
 
     val voiceSearchLanguage: VoiceSearchLanguage?
         get() = prefs.getString(AllPrefsInfo.VOICE_SEARCH_LANGUAGE.key, null)?.let(VoiceSearchLanguage.Companion::getById)

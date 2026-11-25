@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="24dp">
+
+    <TextView
+            android:id="@+id/item_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/app_name_size"
+            android:singleLine="true"
+            android:ellipsize="end" />
+
+    <!-- The whole row handles clicks, so the switch itself takes no input. -->
+    <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/item_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:clickable="false"
+            android:focusable="false" />
+</LinearLayout>

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.*
 import dev.coletz.voidlauncher.core.R
 import dev.coletz.voidlauncher.models.Preference
@@ -73,6 +74,12 @@ class PreferenceManagerDialog(context: Context) {
             return
         }
 
+        if (preferenceEntity.info.type == Boolean::class) {
+            val current = preferenceEntity.effectiveValue.toBoolean()
+            onValueUpdated((!current).toString())
+            return
+        }
+
         val context = rootView.context
 
         val inputTextDialog = InputTextDialog(context)
@@ -85,19 +92,6 @@ class PreferenceManagerDialog(context: Context) {
                     .customizeInput {
                         it.setText(preferenceEntity.rawValue)
                         it.inputType = InputType.TYPE_CLASS_NUMBER
-                    }
-            }
-            Boolean::class -> {
-                inputTextDialog
-                    .customizeInput {
-                        val adapter = ArrayAdapter(
-                            context,
-                            android.R.layout.simple_dropdown_item_1line,
-                            listOf(true, false)
-                        )
-                        it.setAdapter(adapter)
-
-                        it.setText(preferenceEntity.rawValue)
                     }
             }
             PersistableEnum::class -> {
@@ -120,17 +114,32 @@ class PreferenceManagerDialog(context: Context) {
 
     private class PreferenceListAdapter : ListAdapter<Preference.Entity, PreferenceListAdapter.Holder>(Differ) {
 
+        companion object {
+            private const val VIEW_TYPE_TEXT = 0
+            private const val VIEW_TYPE_BOOLEAN = 1
+        }
+
         var onClickListener: (Preference.Entity) -> Unit = {}
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder =
-            Holder(LayoutInflater.from(parent.context).inflate(R.layout.preference_manager_item, parent, false))
+        override fun getItemViewType(position: Int): Int = when (getItem(position).info.type) {
+            Boolean::class -> VIEW_TYPE_BOOLEAN
+            else -> VIEW_TYPE_TEXT
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+            val inflater = LayoutInflater.from(parent.context)
+            return when (viewType) {
+                VIEW_TYPE_BOOLEAN -> BooleanHolder(inflater.inflate(R.layout.preference_manager_item_boolean, parent, false))
+                else -> TextHolder(inflater.inflate(R.layout.preference_manager_item, parent, false))
+            }
+        }
 
         override fun onBindViewHolder(holder: Holder, position: Int) {
             holder.bind(getItem(position))
         }
 
-        inner class Holder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
-            private lateinit var item: Preference.Entity
+        abstract inner class Holder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
+            protected lateinit var item: Preference.Entity
 
             private val itemLabel: TextView = itemView.findViewById(R.id.item_label)
 
@@ -138,13 +147,24 @@ class PreferenceManagerDialog(context: Context) {
                 itemView.setOnClickListener(this)
             }
 
-            fun bind(item: Preference.Entity) {
+            open fun bind(item: Preference.Entity) {
                 this.item = item
                 itemLabel.text = item.info.name
             }
 
             override fun onClick(v: View?) {
                 onClickListener(item)
+            }
+        }
+
+        inner class TextHolder(view: View): Holder(view)
+
+        inner class BooleanHolder(view: View): Holder(view) {
+            private val itemSwitch: SwitchCompat = itemView.findViewById(R.id.item_switch)
+
+            override fun bind(item: Preference.Entity) {
+                super.bind(item)
+                itemSwitch.isChecked = item.effectiveValue.toBoolean()
             }
         }
 
