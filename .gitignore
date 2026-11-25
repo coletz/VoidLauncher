@@ -18,3 +18,4 @@ spotlight/**/release/**
 launcher/**/debug/**
 spotlight/**/debug/**
 app/build/**
+.kotlin
