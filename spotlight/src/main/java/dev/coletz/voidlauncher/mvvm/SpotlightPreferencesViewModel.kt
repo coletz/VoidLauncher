@@ -12,7 +12,7 @@ class SpotlightPreferencesViewModel(application: Application) : PreferencesViewM
 
         object SpotlightPrefsInfo {
             val SHOW_ALL_ON_START = Preference.Info.bool("key.SHOW_ALL_ON_START", "Show all apps on start", defaultValue = false)
-            val SORTING_DIRECTION = Preference.Info.enum("key.SORTING_DIRECTION", "Sorting direction", SortingDirection.entries)
+            val SORTING_DIRECTION = Preference.Info.enum("key.SORTING_DIRECTION", "Sorting direction", SortingDirection.entries, defaultValue = SortingDirection.ASCENDING)
             val SPOTLIGHT_WIDTH = Preference.Info.int("key.SPOTLIGHT_WIDTH", "Spotlight width (%)")
             val ACTIVATION_KEY = Preference.Info.keyCombination("key.ACTIVATION_KEY", "Activation key")
 
@@ -35,7 +35,7 @@ class SpotlightPreferencesViewModel(application: Application) : PreferencesViewM
         get() = readBoolean(SpotlightPrefsInfo.SHOW_ALL_ON_START)
 
     val sortingDirection: SortingDirection
-        get() = prefs.getString(SpotlightPrefsInfo.SORTING_DIRECTION.key, null)?.let(SortingDirection::getById) ?: SortingDirection.ASCENDING
+        get() = readEnum(SpotlightPrefsInfo.SORTING_DIRECTION, SortingDirection.entries) ?: SortingDirection.ASCENDING
 
     val spotlightWidthPercentage: Int
         get() = prefs.getString(SpotlightPrefsInfo.SPOTLIGHT_WIDTH.key, "")?.toIntOrNull()?.coerceIn(10, 100) ?: 85

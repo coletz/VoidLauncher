@@ -11,6 +11,7 @@
     <string name="power_menu_label">Power menu</string>
     <string name="open_app_settings_option_label">Void Launcher Settings</string>
     <string name="close_label">Close</string>
+    <string name="preference_not_set">Not set</string>
 
 
     <!-- KeyboardView - accessibility support -->

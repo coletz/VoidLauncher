@@ -18,7 +18,7 @@ class LauncherPreferencesViewModel(private val application: Application): Prefer
             internal const val CUSTOM_ACTION_BASE_KEY = "key.CUSTOM_ACTION_"
 
             val KEYBOARD_BOTTOM_MARGIN = Preference.Info.int("key.KBD_BOTTOM_MARGIN", "Bottom kb margin (px)")
-            val CUSTOM_ACTIONS = customKeyManager.getCustomKeys().map { Preference.Info.enum("$CUSTOM_ACTION_BASE_KEY${it.id}", it.label, CustomAction.entries) }
+            val CUSTOM_ACTIONS = customKeyManager.getCustomKeys().map { Preference.Info.enum("$CUSTOM_ACTION_BASE_KEY${it.id}", it.label, CustomAction.entries, defaultValue = CustomAction.NONE) }
 
             fun getAll(context: Context): Array<Preference.Info> = mutableListOf<Preference.Info>().apply {
                 if (!deviceHasPhysicalKeyboard(context)) { add(KEYBOARD_BOTTOM_MARGIN) }

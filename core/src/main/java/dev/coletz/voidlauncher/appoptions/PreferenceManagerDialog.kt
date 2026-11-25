@@ -5,7 +5,6 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
@@ -74,42 +73,41 @@ class PreferenceManagerDialog(context: Context) {
             return
         }
 
-        if (preferenceEntity.info.type == Boolean::class) {
-            val current = preferenceEntity.effectiveValue.toBoolean()
-            onValueUpdated((!current).toString())
-            return
+        when (preferenceEntity.info.type) {
+            Boolean::class -> {
+                val current = preferenceEntity.effectiveValue.toBoolean()
+                onValueUpdated((!current).toString())
+            }
+            PersistableEnum::class -> showEnumPicker(preferenceEntity, onValueUpdated)
+            else -> showTextInput(preferenceEntity, onValueUpdated)
         }
+    }
 
-        val context = rootView.context
+    private fun showEnumPicker(preferenceEntity: Preference.Entity, onValueUpdated: (String) -> Unit) {
+        val options = preferenceEntity.info.enumOptions
+        val checkedIndex = options.indexOfFirst { it.id == preferenceEntity.effectiveValue }
 
-        val inputTextDialog = InputTextDialog(context)
+        AlertDialog.Builder(rootView.context)
+            .setTitle(preferenceEntity.info.name)
+            .setSingleChoiceItems(options.map { it.label }.toTypedArray(), checkedIndex) { dialog, which ->
+                onValueUpdated(options[which].id)
+                dialog.dismiss()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun showTextInput(preferenceEntity: Preference.Entity, onValueUpdated: (String) -> Unit) {
+        InputTextDialog(rootView.context)
             .setTitle(preferenceEntity.info.name)
             .setOnConfirmClicked(onValueUpdated)
-
-        when (preferenceEntity.info.type){
-            Int::class -> {
-                inputTextDialog
-                    .customizeInput {
-                        it.setText(preferenceEntity.rawValue)
-                        it.inputType = InputType.TYPE_CLASS_NUMBER
-                    }
+            .customizeInput {
+                it.setText(preferenceEntity.rawValue)
+                if (preferenceEntity.info.type == Int::class) {
+                    it.inputType = InputType.TYPE_CLASS_NUMBER
+                }
             }
-            PersistableEnum::class -> {
-                inputTextDialog
-                    .customizeInput {
-                        val adapter = ArrayAdapter(
-                            context,
-                            android.R.layout.simple_dropdown_item_1line,
-                            preferenceEntity.info.possibleValue as? List<*> ?: emptyList()
-                        )
-                        it.setAdapter(adapter)
-
-                        it.setText(preferenceEntity.rawValue)
-                    }
-            }
-        }
-
-        inputTextDialog.show()
+            .show()
     }
 
     private class PreferenceListAdapter : ListAdapter<Preference.Entity, PreferenceListAdapter.Holder>(Differ) {
@@ -117,12 +115,14 @@ class PreferenceManagerDialog(context: Context) {
         companion object {
             private const val VIEW_TYPE_TEXT = 0
             private const val VIEW_TYPE_BOOLEAN = 1
+            private const val VIEW_TYPE_ENUM = 2
         }
 
         var onClickListener: (Preference.Entity) -> Unit = {}
 
         override fun getItemViewType(position: Int): Int = when (getItem(position).info.type) {
             Boolean::class -> VIEW_TYPE_BOOLEAN
+            PersistableEnum::class -> VIEW_TYPE_ENUM
             else -> VIEW_TYPE_TEXT
         }
 
@@ -130,6 +130,7 @@ class PreferenceManagerDialog(context: Context) {
             val inflater = LayoutInflater.from(parent.context)
             return when (viewType) {
                 VIEW_TYPE_BOOLEAN -> BooleanHolder(inflater.inflate(R.layout.preference_manager_item_boolean, parent, false))
+                VIEW_TYPE_ENUM -> EnumHolder(inflater.inflate(R.layout.preference_manager_item_enum, parent, false))
                 else -> TextHolder(inflater.inflate(R.layout.preference_manager_item, parent, false))
             }
         }
@@ -165,6 +166,17 @@ class PreferenceManagerDialog(context: Context) {
             override fun bind(item: Preference.Entity) {
                 super.bind(item)
                 itemSwitch.isChecked = item.effectiveValue.toBoolean()
+            }
+        }
+
+        inner class EnumHolder(view: View): Holder(view) {
+            private val itemValue: TextView = itemView.findViewById(R.id.item_value)
+
+            override fun bind(item: Preference.Entity) {
+                super.bind(item)
+                val value = item.effectiveValue
+                itemValue.text = item.info.enumOptions.firstOrNull { it.id == value }?.label
+                    ?: itemView.context.getString(R.string.preference_not_set)
             }
         }
 

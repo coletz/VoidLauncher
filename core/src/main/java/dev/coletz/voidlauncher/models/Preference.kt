@@ -27,11 +27,12 @@ object Preference {
                 defaultValue = defaultValue.toString()
             )
 
-            fun <T: PersistableEnum> enum(id: String, name: String, possibleValue: List<T>): Info = Info(
+            fun <T: PersistableEnum> enum(id: String, name: String, possibleValue: List<T>, defaultValue: T? = null): Info = Info(
                 key = id,
                 name = name,
                 type = PersistableEnum::class,
-                possibleValue = possibleValue.map { it.id }.toList()
+                possibleValue = possibleValue.map { EnumOption(id = it.id, label = it.label) },
+                defaultValue = defaultValue?.id
             )
 
             fun keyCombination(id: String, name: String): Info = Info(
@@ -40,7 +41,13 @@ object Preference {
                 type = KeyCombinationType::class
             )
         }
+
+        /** The choices of an enum preference, empty for any other type. */
+        val enumOptions: List<EnumOption>
+            get() = (possibleValue as? List<*>)?.filterIsInstance<EnumOption>().orEmpty()
     }
+
+    data class EnumOption(val id: String, val label: String)
 
     object KeyCombinationType
 
