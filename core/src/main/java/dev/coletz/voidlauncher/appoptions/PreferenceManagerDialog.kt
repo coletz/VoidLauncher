@@ -9,10 +9,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.*
 import dev.coletz.voidlauncher.core.R
+import dev.coletz.voidlauncher.models.KeyCombination
 import dev.coletz.voidlauncher.models.Preference
 import dev.coletz.voidlauncher.models.support.PersistableEnum
 import dev.coletz.voidlauncher.views.InputTextDialog
 import dev.coletz.voidlauncher.views.IntInputDialog
+import dev.coletz.voidlauncher.views.KeyCombinationRecordDialog
 
 class PreferenceManagerDialog(context: Context) {
 
@@ -23,7 +25,6 @@ class PreferenceManagerDialog(context: Context) {
     private val builder: AlertDialog.Builder
 
     private var onPreferenceUpdatedListener: (Preference.Entity) -> Unit = {}
-    private var customPreferenceHandler: ((Preference.Entity, (String) -> Unit) -> Boolean)? = null
 
     init {
         context.bindViews()
@@ -49,10 +50,6 @@ class PreferenceManagerDialog(context: Context) {
         this.onPreferenceUpdatedListener = onPreferenceUpdatedListener
     }
 
-    fun setCustomPreferenceHandler(handler: (Preference.Entity, (String) -> Unit) -> Boolean) = apply {
-        this.customPreferenceHandler = handler
-    }
-
     fun show() = apply {
         builder.show()
     }
@@ -67,12 +64,6 @@ class PreferenceManagerDialog(context: Context) {
     private fun onPreferenceClicked(preferenceEntity: Preference.Entity) {
         val onValueUpdated: (String) -> Unit = { onPreferenceUpdatedListener(preferenceEntity.copy(rawValue = it)) }
 
-        // Try custom handler first
-        val handled = customPreferenceHandler?.invoke(preferenceEntity, onValueUpdated) == true
-        if (handled) {
-            return
-        }
-
         when (preferenceEntity.info.type) {
             Boolean::class -> {
                 val current = preferenceEntity.effectiveValue.toBoolean()
@@ -80,6 +71,7 @@ class PreferenceManagerDialog(context: Context) {
             }
             PersistableEnum::class -> showEnumPicker(preferenceEntity, onValueUpdated)
             Int::class -> showIntInput(preferenceEntity, onValueUpdated)
+            KeyCombination::class -> showKeyCombinationRecorder(preferenceEntity, onValueUpdated)
             else -> showTextInput(preferenceEntity, onValueUpdated)
         }
     }
@@ -108,6 +100,16 @@ class PreferenceManagerDialog(context: Context) {
             .show()
     }
 
+    private fun showKeyCombinationRecorder(preferenceEntity: Preference.Entity, onValueUpdated: (String) -> Unit) {
+        val info = preferenceEntity.info
+        KeyCombinationRecordDialog(rootView.context)
+            .setTitle(info.name)
+            .setCurrentCombination(preferenceEntity.effectiveValue?.let(KeyCombination::deserialize))
+            .setDefaultCombination(info.defaultValue?.let(KeyCombination::deserialize))
+            .setOnConfirmClicked { onValueUpdated(it.serialize()) }
+            .show()
+    }
+
     private fun showTextInput(preferenceEntity: Preference.Entity, onValueUpdated: (String) -> Unit) {
         InputTextDialog(rootView.context)
             .setTitle(preferenceEntity.info.name)
@@ -128,7 +130,7 @@ class PreferenceManagerDialog(context: Context) {
 
         override fun getItemViewType(position: Int): Int = when (getItem(position).info.type) {
             Boolean::class -> VIEW_TYPE_BOOLEAN
-            PersistableEnum::class, Int::class -> VIEW_TYPE_VALUE
+            PersistableEnum::class, Int::class, KeyCombination::class -> VIEW_TYPE_VALUE
             else -> VIEW_TYPE_TEXT
         }
 
@@ -189,6 +191,7 @@ class PreferenceManagerDialog(context: Context) {
                 return when (info.type) {
                     PersistableEnum::class -> info.enumOptions.firstOrNull { it.id == value }?.label
                     Int::class -> value?.toIntOrNull()?.let { int -> info.intRange?.let(int::coerceIn) ?: int }?.toString()
+                    KeyCombination::class -> value?.let(KeyCombination::deserialize)?.toDisplayString()
                     else -> value
                 }
             }

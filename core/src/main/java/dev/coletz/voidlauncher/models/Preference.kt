@@ -37,10 +37,11 @@ object Preference {
                 defaultValue = defaultValue?.id
             )
 
-            fun keyCombination(id: String, name: String): Info = Info(
+            fun keyCombination(id: String, name: String, defaultValue: KeyCombination): Info = Info(
                 key = id,
                 name = name,
-                type = KeyCombinationType::class
+                type = KeyCombination::class,
+                defaultValue = defaultValue.serialize()
             )
         }
 
@@ -54,8 +55,6 @@ object Preference {
     }
 
     data class EnumOption(val id: String, val label: String)
-
-    object KeyCombinationType
 
     data class Entity(
         val info: Info,

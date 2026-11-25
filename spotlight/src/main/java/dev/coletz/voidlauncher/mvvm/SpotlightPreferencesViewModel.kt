@@ -14,7 +14,7 @@ class SpotlightPreferencesViewModel(application: Application) : PreferencesViewM
             val SHOW_ALL_ON_START = Preference.Info.bool("key.SHOW_ALL_ON_START", "Show all apps on start", defaultValue = false)
             val SORTING_DIRECTION = Preference.Info.enum("key.SORTING_DIRECTION", "Sorting direction", SortingDirection.entries, defaultValue = SortingDirection.ASCENDING)
             val SPOTLIGHT_WIDTH = Preference.Info.int("key.SPOTLIGHT_WIDTH", "Spotlight width (%)", defaultValue = 85, range = 10..100)
-            val ACTIVATION_KEY = Preference.Info.keyCombination("key.ACTIVATION_KEY", "Activation key")
+            val ACTIVATION_KEY = Preference.Info.keyCombination("key.ACTIVATION_KEY", "Activation key", defaultValue = KeyCombination.DEFAULT)
 
             fun getAll(): Array<Preference.Info> = arrayOf(
                 SHOW_ALL_ON_START,
