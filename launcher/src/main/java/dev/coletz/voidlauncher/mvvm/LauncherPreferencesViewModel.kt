@@ -17,7 +17,7 @@ class LauncherPreferencesViewModel(private val application: Application): Prefer
         object LauncherPrefsInfo {
             internal const val CUSTOM_ACTION_BASE_KEY = "key.CUSTOM_ACTION_"
 
-            val KEYBOARD_BOTTOM_MARGIN = Preference.Info.int("key.KBD_BOTTOM_MARGIN", "Bottom kb margin (px)")
+            val KEYBOARD_BOTTOM_MARGIN = Preference.Info.int("key.KBD_BOTTOM_MARGIN", "Bottom kb margin (px)", defaultValue = 26)
             val CUSTOM_ACTIONS = customKeyManager.getCustomKeys().map { Preference.Info.enum("$CUSTOM_ACTION_BASE_KEY${it.id}", it.label, CustomAction.entries, defaultValue = CustomAction.NONE) }
 
             fun getAll(context: Context): Array<Preference.Info> = mutableListOf<Preference.Info>().apply {
@@ -34,7 +34,7 @@ class LauncherPreferencesViewModel(private val application: Application): Prefer
     }
 
     val keyboardBottomMargin: Int
-        get() = prefs.getString(LauncherPrefsInfo.KEYBOARD_BOTTOM_MARGIN.key,"")?.toIntOrNull() ?: 26
+        get() = readInt(LauncherPrefsInfo.KEYBOARD_BOTTOM_MARGIN)
 
     fun getCustomActionByKey(keyPrimaryCode: Int): CustomAction {
         val actionId = customKeyManager.getCustomKeyByCode(keyPrimaryCode).id

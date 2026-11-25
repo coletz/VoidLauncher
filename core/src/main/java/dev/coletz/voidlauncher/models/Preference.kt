@@ -14,10 +14,12 @@ object Preference {
         val defaultValue: String? = null
     ) {
         companion object {
-            fun int(id: String, name: String): Info = Info(
+            fun int(id: String, name: String, defaultValue: Int, range: IntRange? = null): Info = Info(
                 key = id,
                 name = name,
-                type = Int::class
+                type = Int::class,
+                possibleValue = range,
+                defaultValue = defaultValue.toString()
             )
 
             fun bool(id: String, name: String, defaultValue: Boolean): Info = Info(
@@ -41,6 +43,10 @@ object Preference {
                 type = KeyCombinationType::class
             )
         }
+
+        /** The allowed values of an int preference, or null if it is unbounded or not an int. */
+        val intRange: IntRange?
+            get() = possibleValue as? IntRange
 
         /** The choices of an enum preference, empty for any other type. */
         val enumOptions: List<EnumOption>

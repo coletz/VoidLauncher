@@ -1,7 +1,6 @@
 package dev.coletz.voidlauncher.appoptions
 
 import android.content.Context
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +12,7 @@ import dev.coletz.voidlauncher.core.R
 import dev.coletz.voidlauncher.models.Preference
 import dev.coletz.voidlauncher.models.support.PersistableEnum
 import dev.coletz.voidlauncher.views.InputTextDialog
+import dev.coletz.voidlauncher.views.IntInputDialog
 
 class PreferenceManagerDialog(context: Context) {
 
@@ -79,6 +79,7 @@ class PreferenceManagerDialog(context: Context) {
                 onValueUpdated((!current).toString())
             }
             PersistableEnum::class -> showEnumPicker(preferenceEntity, onValueUpdated)
+            Int::class -> showIntInput(preferenceEntity, onValueUpdated)
             else -> showTextInput(preferenceEntity, onValueUpdated)
         }
     }
@@ -97,16 +98,21 @@ class PreferenceManagerDialog(context: Context) {
             .show()
     }
 
+    private fun showIntInput(preferenceEntity: Preference.Entity, onValueUpdated: (String) -> Unit) {
+        val info = preferenceEntity.info
+        IntInputDialog(rootView.context)
+            .setTitle(info.name)
+            .setRange(info.intRange)
+            .setValue(preferenceEntity.effectiveValue?.toIntOrNull())
+            .setOnConfirmClicked { onValueUpdated(it.toString()) }
+            .show()
+    }
+
     private fun showTextInput(preferenceEntity: Preference.Entity, onValueUpdated: (String) -> Unit) {
         InputTextDialog(rootView.context)
             .setTitle(preferenceEntity.info.name)
             .setOnConfirmClicked(onValueUpdated)
-            .customizeInput {
-                it.setText(preferenceEntity.rawValue)
-                if (preferenceEntity.info.type == Int::class) {
-                    it.inputType = InputType.TYPE_CLASS_NUMBER
-                }
-            }
+            .customizeInput { it.setText(preferenceEntity.rawValue) }
             .show()
     }
 
@@ -115,14 +121,14 @@ class PreferenceManagerDialog(context: Context) {
         companion object {
             private const val VIEW_TYPE_TEXT = 0
             private const val VIEW_TYPE_BOOLEAN = 1
-            private const val VIEW_TYPE_ENUM = 2
+            private const val VIEW_TYPE_VALUE = 2
         }
 
         var onClickListener: (Preference.Entity) -> Unit = {}
 
         override fun getItemViewType(position: Int): Int = when (getItem(position).info.type) {
             Boolean::class -> VIEW_TYPE_BOOLEAN
-            PersistableEnum::class -> VIEW_TYPE_ENUM
+            PersistableEnum::class, Int::class -> VIEW_TYPE_VALUE
             else -> VIEW_TYPE_TEXT
         }
 
@@ -130,7 +136,7 @@ class PreferenceManagerDialog(context: Context) {
             val inflater = LayoutInflater.from(parent.context)
             return when (viewType) {
                 VIEW_TYPE_BOOLEAN -> BooleanHolder(inflater.inflate(R.layout.preference_manager_item_boolean, parent, false))
-                VIEW_TYPE_ENUM -> EnumHolder(inflater.inflate(R.layout.preference_manager_item_enum, parent, false))
+                VIEW_TYPE_VALUE -> ValueHolder(inflater.inflate(R.layout.preference_manager_item_value, parent, false))
                 else -> TextHolder(inflater.inflate(R.layout.preference_manager_item, parent, false))
             }
         }
@@ -169,14 +175,22 @@ class PreferenceManagerDialog(context: Context) {
             }
         }
 
-        inner class EnumHolder(view: View): Holder(view) {
+        /** Label with the current value underneath. */
+        inner class ValueHolder(view: View): Holder(view) {
             private val itemValue: TextView = itemView.findViewById(R.id.item_value)
 
             override fun bind(item: Preference.Entity) {
                 super.bind(item)
-                val value = item.effectiveValue
-                itemValue.text = item.info.enumOptions.firstOrNull { it.id == value }?.label
-                    ?: itemView.context.getString(R.string.preference_not_set)
+                itemValue.text = item.displayValue() ?: itemView.context.getString(R.string.preference_not_set)
+            }
+
+            private fun Preference.Entity.displayValue(): String? {
+                val value = effectiveValue
+                return when (info.type) {
+                    PersistableEnum::class -> info.enumOptions.firstOrNull { it.id == value }?.label
+                    Int::class -> value?.toIntOrNull()?.let { int -> info.intRange?.let(int::coerceIn) ?: int }?.toString()
+                    else -> value
+                }
             }
         }
 

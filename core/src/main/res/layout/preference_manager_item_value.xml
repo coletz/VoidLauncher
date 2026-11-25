@@ -18,7 +18,7 @@
             android:singleLine="true"
             android:ellipsize="end" />
 
-    <!-- Currently selected value -->
+    <!-- Current value -->
     <TextView
             android:id="@+id/item_value"
             android:layout_width="match_parent"

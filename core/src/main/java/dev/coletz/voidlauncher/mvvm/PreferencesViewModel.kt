@@ -55,6 +55,12 @@ open class PreferencesViewModel(application: Application): AndroidViewModel(appl
     protected fun readBoolean(info: Preference.Info): Boolean =
         prefs.getString(info.key, null)?.toBooleanStrictOrNull() ?: info.defaultValue.toBoolean()
 
+    /** The stored value, or the definition's default, kept inside the definition's range. */
+    protected fun readInt(info: Preference.Info): Int {
+        val value = prefs.getString(info.key, null)?.toIntOrNull() ?: info.defaultValue?.toIntOrNull() ?: 0
+        return info.intRange?.let(value::coerceIn) ?: value
+    }
+
     /** The stored entry, or the definition's default, or null if neither matches one of [entries]. */
     protected fun <T : PersistableEnum> readEnum(info: Preference.Info, entries: List<T>): T? {
         val rawValue = prefs.getString(info.key, null)
