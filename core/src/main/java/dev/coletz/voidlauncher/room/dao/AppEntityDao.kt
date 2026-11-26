@@ -58,7 +58,7 @@ interface AppEntityDao {
     }
 
     @Query("UPDATE app_entity SET edited_name = :editedName WHERE package_name = :packageName")
-    suspend fun updateEditableName(packageName: String, editedName: String)
+    suspend fun updateEditableName(packageName: String, editedName: String?)
 
     @Delete
     suspend fun delete(app: AppEntity)

@@ -25,7 +25,7 @@ class AppRepository(
         }
     }
 
-    suspend fun updateEditableName(packageName: String, editedName: String) {
+    suspend fun updateEditableName(packageName: String, editedName: String?) {
         databaseAppDao.updateEditableName(packageName, editedName)
     }
 

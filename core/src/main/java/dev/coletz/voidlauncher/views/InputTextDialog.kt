@@ -14,6 +14,7 @@ class InputTextDialog(context: Context) {
     private val itemLabel: AppCompatAutoCompleteTextView = rootView.findViewById(R.id.item_label)
     private val builder: AlertDialog.Builder
     private var onConfirm: (String) -> Unit = {}
+    private var allowBlank: Boolean = false
 
     init {
         builder = AlertDialog.Builder(context).apply {
@@ -24,7 +25,7 @@ class InputTextDialog(context: Context) {
                     ?.hideSoftInputFromWindow(itemLabel.windowToken, 0)
 
                 val text = itemLabel.text.toString()
-                if (text.isNotBlank()) { onConfirm(text) }
+                if (allowBlank || text.isNotBlank()) { onConfirm(text) }
             }
         }
     }
@@ -39,6 +40,11 @@ class InputTextDialog(context: Context) {
 
     fun setOnConfirmClicked(onConfirm: (String) -> Unit) = apply {
         this.onConfirm = onConfirm
+    }
+
+    /** By default a blank input is ignored. Set to true to forward it to the confirm callback. */
+    fun setAllowBlank(allowBlank: Boolean) = apply {
+        this.allowBlank = allowBlank
     }
 
     fun show() {

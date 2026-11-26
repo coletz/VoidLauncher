@@ -66,7 +66,7 @@ class AppViewModel(application: Application): AndroidViewModel(application){
 
     fun updateEditableName(packageName: String, editedName: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            appRepo.updateEditableName(packageName, editedName)
+            appRepo.updateEditableName(packageName, editedName.trim().ifEmpty { null })
         }
     }
 

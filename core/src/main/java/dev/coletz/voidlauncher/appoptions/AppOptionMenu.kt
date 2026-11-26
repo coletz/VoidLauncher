@@ -43,6 +43,7 @@ class AppOptionMenu internal constructor(
             InputTextDialog(context)
                 .setTitle("Real name: ${app.officialName}\nPackage: ${app.packageName}")
                 .customizeInput { it.setText(app.editedName) }
+                .setAllowBlank(true)
                 .setOnConfirmClicked { appViewModel.updateEditableName(app.packageName, editedName = it) }
                 .show()
         }
