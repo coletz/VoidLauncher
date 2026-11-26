@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="light_status_bar">false</bool>
+
+    <!-- Overridden to false by e-ink flavors, where every animation frame causes a screen refresh. -->
+    <bool name="animations_enabled">true</bool>
 </resources>

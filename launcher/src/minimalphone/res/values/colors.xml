@@ -2,9 +2,10 @@
 <resources>
     <color name="colorPrimary">@color/default_text_color</color>
     <color name="colorPrimaryDark">@color/default_bg_color</color>
-    <color name="colorAccent">#E31F36</color>
+    <color name="colorAccent">@color/default_text_color</color>
 
     <color name="main_background_color">@color/default_bg_color</color>
+    <color name="window_bg_color">@android:color/transparent</color>
 
     <color name="default_bg_color">#FFF</color>
     <color name="default_text_color">#000</color>

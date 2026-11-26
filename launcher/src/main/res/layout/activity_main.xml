@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    android:animateLayoutChanges="true"
+    android:animateLayoutChanges="@bool/animations_enabled"
     tools:context=".activities.MainActivity"
     android:background="@color/main_background_color"
     >

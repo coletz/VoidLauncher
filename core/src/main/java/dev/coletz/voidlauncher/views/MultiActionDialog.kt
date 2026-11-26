@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.coletz.voidlauncher.core.R
+import dev.coletz.voidlauncher.utils.applyAnimationsSetting
 
 fun Fragment.multiActionDialog(configuration: MultiActionDialogOptions.() -> Unit) = requireContext().multiActionDialog(configuration)
 
@@ -27,6 +28,7 @@ fun Context.multiActionDialog(configuration: MultiActionDialogOptions.() -> Unit
     val recyclerView = RecyclerView(this).apply {
         setPadding(0, 48, 0, 48)
         layoutManager = LinearLayoutManager(context)
+        applyAnimationsSetting()
         adapter = MultiActionAdapter(actionsList) {
             if (options.closeOnSelection) {
                 alertDialog.dismiss()

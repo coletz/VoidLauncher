@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dialogs have no dim or shadow on e-ink, so a border separates them from the content behind.
+     Same 16dp inset as AppCompat's default dialog background. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:inset="16dp">
+    <shape android:shape="rectangle">
+        <solid android:color="@color/default_bg_color" />
+        <stroke android:width="2dp" android:color="@color/default_text_color" />
+        <corners android:radius="2dp" />
+    </shape>
+</inset>

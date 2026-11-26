@@ -12,9 +12,12 @@ import dev.coletz.voidlauncher.core.R
 import dev.coletz.voidlauncher.models.KeyCombination
 import dev.coletz.voidlauncher.models.Preference
 import dev.coletz.voidlauncher.models.support.PersistableEnum
+import dev.coletz.voidlauncher.utils.applyAnimationsSetting
+import dev.coletz.voidlauncher.utils.skipStateAnimationIfDisabled
 import dev.coletz.voidlauncher.views.InputTextDialog
 import dev.coletz.voidlauncher.views.IntInputDialog
 import dev.coletz.voidlauncher.views.KeyCombinationRecordDialog
+import dev.coletz.voidlauncher.views.setWidthPercentage
 
 class PreferenceManagerDialog(context: Context) {
 
@@ -30,6 +33,7 @@ class PreferenceManagerDialog(context: Context) {
         context.bindViews()
 
         recyclerView.adapter = prefsListAdapter
+        recyclerView.applyAnimationsSetting()
 
         prefsListAdapter.onClickListener = { pref ->
             onPreferenceClicked(pref)
@@ -51,7 +55,7 @@ class PreferenceManagerDialog(context: Context) {
     }
 
     fun show() = apply {
-        builder.show()
+        builder.show().setWidthPercentage(.9f)
     }
 
     private fun Context.bindViews() {
@@ -88,6 +92,7 @@ class PreferenceManagerDialog(context: Context) {
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+            .setWidthPercentage(.9f)
     }
 
     private fun showIntInput(preferenceEntity: Preference.Entity, onValueUpdated: (String) -> Unit) {
@@ -174,6 +179,7 @@ class PreferenceManagerDialog(context: Context) {
             override fun bind(item: Preference.Entity) {
                 super.bind(item)
                 itemSwitch.isChecked = item.effectiveValue.toBoolean()
+                itemSwitch.skipStateAnimationIfDisabled()
             }
         }
 
