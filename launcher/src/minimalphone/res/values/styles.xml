@@ -1,18 +1,57 @@
 <resources>
 
-    <style name="CommonAppTheme" parent="Theme.AppCompat.Light">
+    <!-- Light parent so dialogs (which inherit this theme) get a white background: dark dialogs
+         cause refresh artifacts on the e-ink screen. values-night switches it to the dark parent;
+         everything else that differs between day and night comes from colors/bools. -->
+    <style name="MinimalphoneBaseTheme" parent="Theme.AppCompat.Light" />
+
+    <style name="CommonAppTheme" parent="MinimalphoneBaseTheme">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/window_bg_color</item>
+        <item name="android:navigationBarColor">@color/window_bg_color</item>
+        <item name="android:statusBarColor">@color/window_bg_color</item>
         <item name="android:textColor">@color/default_text_color</item>
         <!--<item name="android:fontFamily">sans-serif-condensed</item>-->
 
         <item name="android:windowAnimationStyle">@null</item>
 
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">@bool/light_status_bar</item>
+
+        <!-- No animations on e-ink: every frame is a screen refresh. Ripples are removed and
+             replaced by a static outline on the focused item, for keyboard navigation. -->
+        <item name="colorControlHighlight">@android:color/transparent</item>
+        <item name="android:colorControlHighlight">@android:color/transparent</item>
+        <item name="selectableItemBackground">@drawable/eink_item_background</item>
+        <item name="android:selectableItemBackground">@drawable/eink_item_background</item>
+        <item name="selectableItemBackgroundBorderless">@drawable/eink_item_background</item>
+        <item name="android:selectableItemBackgroundBorderless">@drawable/eink_item_background</item>
+        <item name="android:listChoiceBackgroundIndicator">@drawable/eink_item_background</item>
+
+        <item name="alertDialogTheme">@style/EinkAlertDialogTheme</item>
+    </style>
+
+    <!-- Applied on top of CommonAppTheme, so it works for both the light and dark parent.
+         No open animation, no dimmed background, no shadow: a bordered box drawn in one frame. -->
+    <style name="EinkAlertDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/eink_dialog_background</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowElevation">0dp</item>
+
+        <item name="colorControlHighlight">@android:color/transparent</item>
+        <item name="android:colorControlHighlight">@android:color/transparent</item>
+
+        <item name="buttonBarButtonStyle">@style/EinkDialogButton</item>
+        <item name="buttonBarPositiveButtonStyle">@style/EinkDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/EinkDialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/EinkDialogButton</item>
+    </style>
+
+    <style name="EinkDialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:background">@drawable/eink_item_background</item>
+        <item name="android:stateListAnimator">@null</item>
     </style>
 </resources>

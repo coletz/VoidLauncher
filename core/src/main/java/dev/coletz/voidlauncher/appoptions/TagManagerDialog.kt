@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.*
 import dev.coletz.voidlauncher.core.R
 import dev.coletz.voidlauncher.models.AppEntity
 import dev.coletz.voidlauncher.models.TagEntity
+import dev.coletz.voidlauncher.utils.applyAnimationsSetting
 import dev.coletz.voidlauncher.views.InputTextDialog
 
 
@@ -32,6 +33,7 @@ class TagManagerDialog(context: Context) {
     init {
         context.bindViews()
         recyclerView.adapter = tagListAdapter
+        recyclerView.applyAnimationsSetting()
 
         tagListAdapter.onLongClickListener = { onTagDeletedListener(it) }
 

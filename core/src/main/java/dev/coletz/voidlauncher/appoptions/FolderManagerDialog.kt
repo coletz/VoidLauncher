@@ -12,6 +12,8 @@ import dev.coletz.voidlauncher.core.R
 import dev.coletz.voidlauncher.models.AppEntity
 import dev.coletz.voidlauncher.models.FolderEntity
 import dev.coletz.voidlauncher.room.entities.FolderWithApps
+import dev.coletz.voidlauncher.utils.applyAnimationsSetting
+import dev.coletz.voidlauncher.utils.skipStateAnimationIfDisabled
 import dev.coletz.voidlauncher.views.InputTextDialog
 
 
@@ -35,6 +37,7 @@ class FolderManagerDialog(context: Context) {
         context.bindViews()
 
         recyclerView.adapter = folderListAdapter
+        recyclerView.applyAnimationsSetting()
 
         folderListAdapter.onAppChecked = { folder, isChecked ->
             if (isChecked) {
@@ -123,9 +126,11 @@ class FolderManagerDialog(context: Context) {
                 this.item = item
                 itemLabel.text = item.folder.name
                 itemLabel.isChecked = app in item.apps
+                itemLabel.skipStateAnimationIfDisabled()
             }
 
             override fun onCheckedChanged(v: CompoundButton, isChecked: Boolean) {
+                v.skipStateAnimationIfDisabled()
                 onAppChecked(item.folder, isChecked)
             }
         }

@@ -12,6 +12,8 @@ import dev.coletz.voidlauncher.core.R
 import dev.coletz.voidlauncher.models.KeyCombination
 import dev.coletz.voidlauncher.models.Preference
 import dev.coletz.voidlauncher.models.support.PersistableEnum
+import dev.coletz.voidlauncher.utils.applyAnimationsSetting
+import dev.coletz.voidlauncher.utils.skipStateAnimationIfDisabled
 import dev.coletz.voidlauncher.views.InputTextDialog
 import dev.coletz.voidlauncher.views.IntInputDialog
 import dev.coletz.voidlauncher.views.KeyCombinationRecordDialog
@@ -31,6 +33,7 @@ class PreferenceManagerDialog(context: Context) {
         context.bindViews()
 
         recyclerView.adapter = prefsListAdapter
+        recyclerView.applyAnimationsSetting()
 
         prefsListAdapter.onClickListener = { pref ->
             onPreferenceClicked(pref)
@@ -176,6 +179,7 @@ class PreferenceManagerDialog(context: Context) {
             override fun bind(item: Preference.Entity) {
                 super.bind(item)
                 itemSwitch.isChecked = item.effectiveValue.toBoolean()
+                itemSwitch.skipStateAnimationIfDisabled()
             }
         }
 

@@ -1,18 +1,5 @@
 <resources>
 
-    <style name="CommonAppTheme" parent="Theme.AppCompat">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="android:windowBackground">@color/default_bg_color</item>
-        <item name="android:navigationBarColor">@color/default_bg_color</item>
-        <item name="android:statusBarColor">@color/default_bg_color</item>
-        <item name="android:textColor">@color/default_text_color</item>
-        <!--<item name="android:fontFamily">sans-serif-condensed</item>-->
-
-        <item name="android:windowAnimationStyle">@null</item>
-
-        <item name="android:windowLightStatusBar">false</item>
-    </style>
+    <!-- Only the parent changes at night; CommonAppTheme itself is defined once in values/. -->
+    <style name="MinimalphoneBaseTheme" parent="Theme.AppCompat" />
 </resources>
