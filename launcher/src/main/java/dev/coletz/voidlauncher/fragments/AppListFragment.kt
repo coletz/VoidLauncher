@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +33,7 @@ import dev.coletz.voidlauncher.mvvm.LauncherPreferencesViewModel
 import dev.coletz.voidlauncher.utils.*
 import dev.coletz.voidlauncher.views.AppUiItem
 import dev.coletz.voidlauncher.views.AppsAdapter
+import dev.coletz.voidlauncher.views.MainListUiItem
 import dev.coletz.voidlauncher.views.multiActionDialog
 import java.util.*
 
@@ -52,6 +54,9 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
     private val appsAdapter = AppsAdapter()
 
     private var spacePressedAt = 0L
+
+    private var defaultListPaddingTop = 0
+    private var defaultListPaddingBottom = 0
 
     private var filter: String
         get() = appViewModel.filter.value ?: ""
@@ -93,6 +98,9 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
         appsList.addItemDecoration(SpaceItemDecoration(28))
 
         appsList.itemAnimator = null
+
+        defaultListPaddingTop = appsList.paddingTop
+        defaultListPaddingBottom = appsList.paddingBottom
 
         appsAdapter.onAppClicked = { app ->
             launchApp(app)
@@ -252,7 +260,30 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
 
     }
 
-    private var appsObserver = Observer(appsAdapter::updateApps)
+    private var appsObserver = Observer<List<MainListUiItem>> { apps ->
+        // distraction free home (favorites only): centered list; search results keep the normal look
+        val centered = appViewModel.distractionFreeMode && filter.isBlank()
+        updateAppsListPosition(centered)
+        appsAdapter.updateApps(apps, centered)
+    }
+
+    /** Centered: the list wraps its content and sits in the middle of the free space, instead of filling it. */
+    private fun updateAppsListPosition(centered: Boolean) {
+        if (appsAdapter.centered == centered) return
+        appsList.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            height = if (centered) ConstraintLayout.LayoutParams.WRAP_CONTENT else 0
+            constrainedHeight = centered
+            verticalBias = 0.5f
+        }
+        // symmetric padding, otherwise the list is visibly off-center
+        val (top, bottom) = if (centered) {
+            val half = (defaultListPaddingTop + defaultListPaddingBottom) / 2
+            half to half
+        } else {
+            defaultListPaddingTop to defaultListPaddingBottom
+        }
+        appsList.updatePadding(top = top, bottom = bottom)
+    }
 
     private var singleAppLauncher: Observer<AppUiItem?> = Observer({ app ->
         app ?: return@Observer

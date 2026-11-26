@@ -2,6 +2,7 @@ package dev.coletz.voidlauncher.views
 
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,10 @@ class AppsAdapter: ListAdapter<MainListUiItem, AppsAdapter.Holder>(Differ) {
 
     var onVisibleAppsLoaded: () -> Unit = {}
 
+    /** When true, labels are centered and the favorite icon is hidden. Change it through [updateApps]. */
+    var centered: Boolean = false
+        private set
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder =
         Holder(LayoutInflater.from(parent.context).inflate(R.layout.app_list_item, parent, false))
 
@@ -30,7 +35,13 @@ class AppsAdapter: ListAdapter<MainListUiItem, AppsAdapter.Holder>(Differ) {
         holder.bind(getItem(position))
     }
 
-    fun updateApps(newApps: List<MainListUiItem>) {
+    fun updateApps(newApps: List<MainListUiItem>, centered: Boolean = this.centered) {
+        if (centered != this.centered) {
+            // clearing first makes both submissions synchronous (no async diff),
+            // so the old list is never drawn with the new style or vice versa
+            submitList(null)
+            this.centered = centered
+        }
         submitList(newApps) { onVisibleAppsLoaded() }
     }
 
@@ -72,6 +83,7 @@ class AppsAdapter: ListAdapter<MainListUiItem, AppsAdapter.Holder>(Differ) {
         }
 
         private val itemLabel: TextView = itemView.findViewById(R.id.item_label)
+        private val defaultGravity = itemLabel.gravity
 
         init {
             itemView.setOnClickListener(this)
@@ -81,8 +93,9 @@ class AppsAdapter: ListAdapter<MainListUiItem, AppsAdapter.Holder>(Differ) {
         fun bind(item: MainListUiItem){
             this.item = item
             itemLabel.text = item.uiName
+            itemLabel.gravity = if (centered) Gravity.CENTER_HORIZONTAL else defaultGravity
 
-            if (item.isFavorite) {
+            if (item.isFavorite && !centered) {
                 itemLabel.setCompoundDrawablesWithIntrinsicBounds(null, null, icFavorite, null)
             } else {
                 itemLabel.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
