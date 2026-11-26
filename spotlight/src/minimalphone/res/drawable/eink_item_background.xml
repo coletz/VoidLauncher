@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Static replacement for ripples: no fade, no pressed flash. The focused item (keyboard
-     navigation) gets a plain outline, otherwise nothing is drawn. -->
+<!-- Static replacement for ripples: no fade, no pressed flash. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true">
-        <shape android:shape="rectangle">
-            <stroke android:width="2dp" android:color="@color/default_text_color" />
-        </shape>
-    </item>
     <item android:drawable="@android:color/transparent" />
 </selector>
