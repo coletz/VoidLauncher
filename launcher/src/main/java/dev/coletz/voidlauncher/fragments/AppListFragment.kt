@@ -271,8 +271,16 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
     private fun updateAppsListPosition(centered: Boolean) {
         if (appsAdapter.centered == centered) return
         appsList.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            height = if (centered) ConstraintLayout.LayoutParams.WRAP_CONTENT else 0
-            constrainedHeight = centered
+            // always 0dp (match constraint): WRAP wraps the content but stays within the constraints, SPREAD fills them.
+            // matchConstraintDefaultHeight must be set explicitly in both directions: ConstraintLayout's validate()
+            // turns 0dp + MATCH_CONSTRAINT_WRAP back into a wrapped height, so resetting only the height is not enough
+            height = ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+            constrainedHeight = false
+            matchConstraintDefaultHeight = if (centered) {
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_WRAP
+            } else {
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT_SPREAD
+            }
             verticalBias = 0.5f
         }
         // symmetric padding, otherwise the list is visibly off-center
