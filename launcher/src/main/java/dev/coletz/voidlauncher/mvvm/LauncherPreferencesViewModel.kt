@@ -19,8 +19,10 @@ class LauncherPreferencesViewModel(private val application: Application): Prefer
 
             val KEYBOARD_BOTTOM_MARGIN = Preference.Info.int("key.KBD_BOTTOM_MARGIN", "Bottom kb margin (px)", defaultValue = 26)
             val CUSTOM_ACTIONS = customKeyManager.getCustomKeys().map { Preference.Info.enum("$CUSTOM_ACTION_BASE_KEY${it.id}", it.label, CustomAction.entries, defaultValue = CustomAction.NONE) }
+            val DISTRACTION_FREE_MODE = Preference.Info.bool("key.DISTRACTION_FREE_MODE", "Distraction free mode", false)
 
             fun getAll(context: Context): Array<Preference.Info> = mutableListOf<Preference.Info>().apply {
+                add(DISTRACTION_FREE_MODE)
                 if (!deviceHasPhysicalKeyboard(context)) { add(KEYBOARD_BOTTOM_MARGIN) }
                 addAll(CUSTOM_ACTIONS)
             }.toTypedArray()
@@ -35,6 +37,9 @@ class LauncherPreferencesViewModel(private val application: Application): Prefer
 
     val keyboardBottomMargin: Int
         get() = readInt(LauncherPrefsInfo.KEYBOARD_BOTTOM_MARGIN)
+
+    val distractionFreeMode: Boolean
+        get() = prefs.getString(LauncherPrefsInfo.DISTRACTION_FREE_MODE.key, "")?.toBooleanStrictOrNull() ?: false
 
     fun getCustomActionByKey(keyPrimaryCode: Int): CustomAction {
         val actionId = customKeyManager.getCustomKeyByCode(keyPrimaryCode).id

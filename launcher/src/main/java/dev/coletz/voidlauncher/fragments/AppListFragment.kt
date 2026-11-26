@@ -163,6 +163,7 @@ class AppListFragment: Fragment(R.layout.fragment_app_list), KeyboardView.OnKeyb
     }
 
     private fun refreshUi() {
+        appViewModel.distractionFreeMode = prefsViewModel.distractionFreeMode
         keyboardView.updateLayoutParams<ConstraintLayout.LayoutParams> {
             bottomMargin = prefsViewModel.keyboardBottomMargin
         }
