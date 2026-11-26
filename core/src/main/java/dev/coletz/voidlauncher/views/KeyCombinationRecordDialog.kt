@@ -1,7 +1,6 @@
 package dev.coletz.voidlauncher.views
 
 import android.content.Context
-import android.content.DialogInterface
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.widget.TextView
@@ -63,6 +62,7 @@ class KeyCombinationRecordDialog(context: Context) {
         }
 
         dialog.show()
+        dialog.setWidthPercentage(.9f)
         updateDisplay()
     }
 

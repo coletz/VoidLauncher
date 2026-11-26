@@ -80,6 +80,7 @@ class IntInputDialog(private val context: Context) {
 
     fun show() {
         val dialog = builder.show()
+        dialog.setWidthPercentage(.9f)
         // Enter on a physical keyboard (or Done on the soft one) confirms, like the OK button
         input.setOnEditorActionListener { _, actionId, event ->
             val isEnter = event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN

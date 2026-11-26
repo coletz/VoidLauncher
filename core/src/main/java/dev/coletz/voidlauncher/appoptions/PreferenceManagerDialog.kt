@@ -15,6 +15,7 @@ import dev.coletz.voidlauncher.models.support.PersistableEnum
 import dev.coletz.voidlauncher.views.InputTextDialog
 import dev.coletz.voidlauncher.views.IntInputDialog
 import dev.coletz.voidlauncher.views.KeyCombinationRecordDialog
+import dev.coletz.voidlauncher.views.setWidthPercentage
 
 class PreferenceManagerDialog(context: Context) {
 
@@ -51,7 +52,7 @@ class PreferenceManagerDialog(context: Context) {
     }
 
     fun show() = apply {
-        builder.show()
+        builder.show().setWidthPercentage(.9f)
     }
 
     private fun Context.bindViews() {
@@ -88,6 +89,7 @@ class PreferenceManagerDialog(context: Context) {
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
+            .setWidthPercentage(.9f)
     }
 
     private fun showIntInput(preferenceEntity: Preference.Entity, onValueUpdated: (String) -> Unit) {

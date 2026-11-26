@@ -42,6 +42,6 @@ class InputTextDialog(context: Context) {
     }
 
     fun show() {
-        builder.show()
+        builder.show().setWidthPercentage(.9f)
     }
 }
